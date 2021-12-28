@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import App from './components/App';
 
 import Test from "./tools/TestFile"
+import CanvasViewer from "./tools/CanvasViewer"
+
 
 // Importing the Bootstrap CSS
 //import 'bootstrap/dist/css/bootstrap.min.css';
@@ -10,3 +12,4 @@ import Test from "./tools/TestFile"
 ReactDOM.render(<App />, document.getElementById('root'));
 console.log("Hello, index.js is working");
 Test();
+CanvasViewer();
