@@ -1,11 +1,13 @@
 import React, { useState } from "react";
+import Canvas from "./Canvas";
 
-import Navbar from "./Navbar";
+import Header from "./Navbar";
 
 function App() {
   return (
     <div>
-      <Navbar />
+      <Header />
+      <Canvas />
     </div>
   );
 }

@@ -8,6 +8,9 @@
 # testing
 /coverage
 
+# project
+#/models
+
 # misc
 .DS_STORE
 .env.local
