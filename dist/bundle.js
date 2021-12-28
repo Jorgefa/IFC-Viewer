@@ -7691,13 +7691,6 @@ console.info('%cDownload the React DevTools '+'for a better development experien
 
 var ReactDOM = reactDom.exports;
 
-function Canvas() {
-  return /*#__PURE__*/React.createElement("div", {
-    id: "canvas",
-    className: "app-container"
-  });
-}
-
 var classnames = {exports: {}};
 
 /*!
@@ -9807,20 +9800,53 @@ function Header() {
   return /*#__PURE__*/React.createElement(Nav$1, {
     activeKey: "/home",
     onSelect: selectedKey => alert(`selected ${selectedKey}`)
-  }, /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement(Nav$1.Link, {
-    href: "/home"
-  }, "Active")), /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement(Nav$1.Link, {
-    eventKey: "link-1"
-  }, "Link")), /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement(Nav$1.Link, {
-    eventKey: "link-2"
-  }, "Link")), /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement(Nav$1.Link, {
+  }, /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement(Nav$1.Link, null, /*#__PURE__*/React.createElement("div", {
+    class: "button"
+  }, "Home"))), /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement(Nav$1.Link, null, /*#__PURE__*/React.createElement("div", {
+    id: "loader-button",
+    class: "button"
+  }, "Open"))), /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement(Nav$1.Link, {
     eventKey: "disabled",
     disabled: true
-  }, "Disabled")));
+  }, /*#__PURE__*/React.createElement("div", {
+    id: "unloader-button",
+    class: "button"
+  }, "Unload"))));
+}
+
+function Canvas() {
+  return /*#__PURE__*/React.createElement("div", {
+    id: "canvasViewer",
+    className: "canvas"
+  });
+}
+
+function Sidebar() {
+  return /*#__PURE__*/React.createElement("div", {
+    class: "sidebar"
+  }, /*#__PURE__*/React.createElement("div", {
+    class: "tree-menu-container"
+  }, /*#__PURE__*/React.createElement("ul", {
+    id: "tree-menu"
+  })), /*#__PURE__*/React.createElement("div", {
+    id: "property-menu",
+    class: "property-menu"
+  }, /*#__PURE__*/React.createElement("div", {
+    class: "property-root"
+  }, /*#__PURE__*/React.createElement("div", {
+    class: "property-name"
+  }, "Name"), /*#__PURE__*/React.createElement("div", {
+    class: "property-value"
+  }, "Value"))));
 }
 
 function App() {
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Header, null), /*#__PURE__*/React.createElement(Canvas, null));
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("input", {
+    type: "file",
+    id: "file-input"
+  }), /*#__PURE__*/React.createElement(Header, null), /*#__PURE__*/React.createElement("div", {
+    class: "app-container"
+  }, /*#__PURE__*/React.createElement(Sidebar, null), /*#__PURE__*/React.createElement(Canvas, null)));
 }
 
 /**
@@ -10131,8 +10157,8 @@ this.r/=255;this.g/=255;this.b/=255;}return this;}toJSON(){return this.getHex();
  *  wireframe: <boolean>,
  *  wireframeLinewidth: <float>,
  * }
- */class MeshBasicMaterial$1 extends Material{constructor(parameters){super();this.type='MeshBasicMaterial';this.color=new Color(0xffffff);// emissive
-this.map=null;this.lightMap=null;this.lightMapIntensity=1.0;this.aoMap=null;this.aoMapIntensity=1.0;this.specularMap=null;this.alphaMap=null;this.envMap=null;this.combine=MultiplyOperation;this.reflectivity=1;this.refractionRatio=0.98;this.wireframe=false;this.wireframeLinewidth=1;this.wireframeLinecap='round';this.wireframeLinejoin='round';this.setValues(parameters);}copy(source){super.copy(source);this.color.copy(source.color);this.map=source.map;this.lightMap=source.lightMap;this.lightMapIntensity=source.lightMapIntensity;this.aoMap=source.aoMap;this.aoMapIntensity=source.aoMapIntensity;this.specularMap=source.specularMap;this.alphaMap=source.alphaMap;this.envMap=source.envMap;this.combine=source.combine;this.reflectivity=source.reflectivity;this.refractionRatio=source.refractionRatio;this.wireframe=source.wireframe;this.wireframeLinewidth=source.wireframeLinewidth;this.wireframeLinecap=source.wireframeLinecap;this.wireframeLinejoin=source.wireframeLinejoin;return this;}}MeshBasicMaterial$1.prototype.isMeshBasicMaterial=true;const _vector$9=/*@__PURE__*/new Vector3();const _vector2$1=/*@__PURE__*/new Vector2();class BufferAttribute{constructor(array,itemSize,normalized){if(Array.isArray(array)){throw new TypeError('THREE.BufferAttribute: array should be a Typed Array.');}this.name='';this.array=array;this.itemSize=itemSize;this.count=array!==undefined?array.length/itemSize:0;this.normalized=normalized===true;this.usage=StaticDrawUsage;this.updateRange={offset:0,count:-1};this.version=0;}onUploadCallback(){}set needsUpdate(value){if(value===true)this.version++;}setUsage(value){this.usage=value;return this;}copy(source){this.name=source.name;this.array=new source.array.constructor(source.array);this.itemSize=source.itemSize;this.count=source.count;this.normalized=source.normalized;this.usage=source.usage;return this;}copyAt(index1,attribute,index2){index1*=this.itemSize;index2*=attribute.itemSize;for(let i=0,l=this.itemSize;i<l;i++){this.array[index1+i]=attribute.array[index2+i];}return this;}copyArray(array){this.array.set(array);return this;}copyColorsArray(colors){const array=this.array;let offset=0;for(let i=0,l=colors.length;i<l;i++){let color=colors[i];if(color===undefined){console.warn('THREE.BufferAttribute.copyColorsArray(): color is undefined',i);color=new Color();}array[offset++]=color.r;array[offset++]=color.g;array[offset++]=color.b;}return this;}copyVector2sArray(vectors){const array=this.array;let offset=0;for(let i=0,l=vectors.length;i<l;i++){let vector=vectors[i];if(vector===undefined){console.warn('THREE.BufferAttribute.copyVector2sArray(): vector is undefined',i);vector=new Vector2();}array[offset++]=vector.x;array[offset++]=vector.y;}return this;}copyVector3sArray(vectors){const array=this.array;let offset=0;for(let i=0,l=vectors.length;i<l;i++){let vector=vectors[i];if(vector===undefined){console.warn('THREE.BufferAttribute.copyVector3sArray(): vector is undefined',i);vector=new Vector3();}array[offset++]=vector.x;array[offset++]=vector.y;array[offset++]=vector.z;}return this;}copyVector4sArray(vectors){const array=this.array;let offset=0;for(let i=0,l=vectors.length;i<l;i++){let vector=vectors[i];if(vector===undefined){console.warn('THREE.BufferAttribute.copyVector4sArray(): vector is undefined',i);vector=new Vector4();}array[offset++]=vector.x;array[offset++]=vector.y;array[offset++]=vector.z;array[offset++]=vector.w;}return this;}applyMatrix3(m){if(this.itemSize===2){for(let i=0,l=this.count;i<l;i++){_vector2$1.fromBufferAttribute(this,i);_vector2$1.applyMatrix3(m);this.setXY(i,_vector2$1.x,_vector2$1.y);}}else if(this.itemSize===3){for(let i=0,l=this.count;i<l;i++){_vector$9.fromBufferAttribute(this,i);_vector$9.applyMatrix3(m);this.setXYZ(i,_vector$9.x,_vector$9.y,_vector$9.z);}}return this;}applyMatrix4(m){for(let i=0,l=this.count;i<l;i++){_vector$9.x=this.getX(i);_vector$9.y=this.getY(i);_vector$9.z=this.getZ(i);_vector$9.applyMatrix4(m);this.setXYZ(i,_vector$9.x,_vector$9.y,_vector$9.z);}return this;}applyNormalMatrix(m){for(let i=0,l=this.count;i<l;i++){_vector$9.x=this.getX(i);_vector$9.y=this.getY(i);_vector$9.z=this.getZ(i);_vector$9.applyNormalMatrix(m);this.setXYZ(i,_vector$9.x,_vector$9.y,_vector$9.z);}return this;}transformDirection(m){for(let i=0,l=this.count;i<l;i++){_vector$9.x=this.getX(i);_vector$9.y=this.getY(i);_vector$9.z=this.getZ(i);_vector$9.transformDirection(m);this.setXYZ(i,_vector$9.x,_vector$9.y,_vector$9.z);}return this;}set(value,offset=0){this.array.set(value,offset);return this;}getX(index){return this.array[index*this.itemSize];}setX(index,x){this.array[index*this.itemSize]=x;return this;}getY(index){return this.array[index*this.itemSize+1];}setY(index,y){this.array[index*this.itemSize+1]=y;return this;}getZ(index){return this.array[index*this.itemSize+2];}setZ(index,z){this.array[index*this.itemSize+2]=z;return this;}getW(index){return this.array[index*this.itemSize+3];}setW(index,w){this.array[index*this.itemSize+3]=w;return this;}setXY(index,x,y){index*=this.itemSize;this.array[index+0]=x;this.array[index+1]=y;return this;}setXYZ(index,x,y,z){index*=this.itemSize;this.array[index+0]=x;this.array[index+1]=y;this.array[index+2]=z;return this;}setXYZW(index,x,y,z,w){index*=this.itemSize;this.array[index+0]=x;this.array[index+1]=y;this.array[index+2]=z;this.array[index+3]=w;return this;}onUpload(callback){this.onUploadCallback=callback;return this;}clone(){return new this.constructor(this.array,this.itemSize).copy(this);}toJSON(){const data={itemSize:this.itemSize,type:this.array.constructor.name,array:Array.prototype.slice.call(this.array),normalized:this.normalized};if(this.name!=='')data.name=this.name;if(this.usage!==StaticDrawUsage)data.usage=this.usage;if(this.updateRange.offset!==0||this.updateRange.count!==-1)data.updateRange=this.updateRange;return data;}}BufferAttribute.prototype.isBufferAttribute=true;//
+ */class MeshBasicMaterial extends Material{constructor(parameters){super();this.type='MeshBasicMaterial';this.color=new Color(0xffffff);// emissive
+this.map=null;this.lightMap=null;this.lightMapIntensity=1.0;this.aoMap=null;this.aoMapIntensity=1.0;this.specularMap=null;this.alphaMap=null;this.envMap=null;this.combine=MultiplyOperation;this.reflectivity=1;this.refractionRatio=0.98;this.wireframe=false;this.wireframeLinewidth=1;this.wireframeLinecap='round';this.wireframeLinejoin='round';this.setValues(parameters);}copy(source){super.copy(source);this.color.copy(source.color);this.map=source.map;this.lightMap=source.lightMap;this.lightMapIntensity=source.lightMapIntensity;this.aoMap=source.aoMap;this.aoMapIntensity=source.aoMapIntensity;this.specularMap=source.specularMap;this.alphaMap=source.alphaMap;this.envMap=source.envMap;this.combine=source.combine;this.reflectivity=source.reflectivity;this.refractionRatio=source.refractionRatio;this.wireframe=source.wireframe;this.wireframeLinewidth=source.wireframeLinewidth;this.wireframeLinecap=source.wireframeLinecap;this.wireframeLinejoin=source.wireframeLinejoin;return this;}}MeshBasicMaterial.prototype.isMeshBasicMaterial=true;const _vector$9=/*@__PURE__*/new Vector3();const _vector2$1=/*@__PURE__*/new Vector2();class BufferAttribute{constructor(array,itemSize,normalized){if(Array.isArray(array)){throw new TypeError('THREE.BufferAttribute: array should be a Typed Array.');}this.name='';this.array=array;this.itemSize=itemSize;this.count=array!==undefined?array.length/itemSize:0;this.normalized=normalized===true;this.usage=StaticDrawUsage;this.updateRange={offset:0,count:-1};this.version=0;}onUploadCallback(){}set needsUpdate(value){if(value===true)this.version++;}setUsage(value){this.usage=value;return this;}copy(source){this.name=source.name;this.array=new source.array.constructor(source.array);this.itemSize=source.itemSize;this.count=source.count;this.normalized=source.normalized;this.usage=source.usage;return this;}copyAt(index1,attribute,index2){index1*=this.itemSize;index2*=attribute.itemSize;for(let i=0,l=this.itemSize;i<l;i++){this.array[index1+i]=attribute.array[index2+i];}return this;}copyArray(array){this.array.set(array);return this;}copyColorsArray(colors){const array=this.array;let offset=0;for(let i=0,l=colors.length;i<l;i++){let color=colors[i];if(color===undefined){console.warn('THREE.BufferAttribute.copyColorsArray(): color is undefined',i);color=new Color();}array[offset++]=color.r;array[offset++]=color.g;array[offset++]=color.b;}return this;}copyVector2sArray(vectors){const array=this.array;let offset=0;for(let i=0,l=vectors.length;i<l;i++){let vector=vectors[i];if(vector===undefined){console.warn('THREE.BufferAttribute.copyVector2sArray(): vector is undefined',i);vector=new Vector2();}array[offset++]=vector.x;array[offset++]=vector.y;}return this;}copyVector3sArray(vectors){const array=this.array;let offset=0;for(let i=0,l=vectors.length;i<l;i++){let vector=vectors[i];if(vector===undefined){console.warn('THREE.BufferAttribute.copyVector3sArray(): vector is undefined',i);vector=new Vector3();}array[offset++]=vector.x;array[offset++]=vector.y;array[offset++]=vector.z;}return this;}copyVector4sArray(vectors){const array=this.array;let offset=0;for(let i=0,l=vectors.length;i<l;i++){let vector=vectors[i];if(vector===undefined){console.warn('THREE.BufferAttribute.copyVector4sArray(): vector is undefined',i);vector=new Vector4();}array[offset++]=vector.x;array[offset++]=vector.y;array[offset++]=vector.z;array[offset++]=vector.w;}return this;}applyMatrix3(m){if(this.itemSize===2){for(let i=0,l=this.count;i<l;i++){_vector2$1.fromBufferAttribute(this,i);_vector2$1.applyMatrix3(m);this.setXY(i,_vector2$1.x,_vector2$1.y);}}else if(this.itemSize===3){for(let i=0,l=this.count;i<l;i++){_vector$9.fromBufferAttribute(this,i);_vector$9.applyMatrix3(m);this.setXYZ(i,_vector$9.x,_vector$9.y,_vector$9.z);}}return this;}applyMatrix4(m){for(let i=0,l=this.count;i<l;i++){_vector$9.x=this.getX(i);_vector$9.y=this.getY(i);_vector$9.z=this.getZ(i);_vector$9.applyMatrix4(m);this.setXYZ(i,_vector$9.x,_vector$9.y,_vector$9.z);}return this;}applyNormalMatrix(m){for(let i=0,l=this.count;i<l;i++){_vector$9.x=this.getX(i);_vector$9.y=this.getY(i);_vector$9.z=this.getZ(i);_vector$9.applyNormalMatrix(m);this.setXYZ(i,_vector$9.x,_vector$9.y,_vector$9.z);}return this;}transformDirection(m){for(let i=0,l=this.count;i<l;i++){_vector$9.x=this.getX(i);_vector$9.y=this.getY(i);_vector$9.z=this.getZ(i);_vector$9.transformDirection(m);this.setXYZ(i,_vector$9.x,_vector$9.y,_vector$9.z);}return this;}set(value,offset=0){this.array.set(value,offset);return this;}getX(index){return this.array[index*this.itemSize];}setX(index,x){this.array[index*this.itemSize]=x;return this;}getY(index){return this.array[index*this.itemSize+1];}setY(index,y){this.array[index*this.itemSize+1]=y;return this;}getZ(index){return this.array[index*this.itemSize+2];}setZ(index,z){this.array[index*this.itemSize+2]=z;return this;}getW(index){return this.array[index*this.itemSize+3];}setW(index,w){this.array[index*this.itemSize+3]=w;return this;}setXY(index,x,y){index*=this.itemSize;this.array[index+0]=x;this.array[index+1]=y;return this;}setXYZ(index,x,y,z){index*=this.itemSize;this.array[index+0]=x;this.array[index+1]=y;this.array[index+2]=z;return this;}setXYZW(index,x,y,z,w){index*=this.itemSize;this.array[index+0]=x;this.array[index+1]=y;this.array[index+2]=z;this.array[index+3]=w;return this;}onUpload(callback){this.onUploadCallback=callback;return this;}clone(){return new this.constructor(this.array,this.itemSize).copy(this);}toJSON(){const data={itemSize:this.itemSize,type:this.array.constructor.name,array:Array.prototype.slice.call(this.array),normalized:this.normalized};if(this.name!=='')data.name=this.name;if(this.usage!==StaticDrawUsage)data.usage=this.usage;if(this.updateRange.offset!==0||this.updateRange.count!==-1)data.updateRange=this.updateRange;return data;}}BufferAttribute.prototype.isBufferAttribute=true;//
 class Uint16BufferAttribute extends BufferAttribute{constructor(array,itemSize,normalized){super(new Uint16Array(array),itemSize,normalized);}}class Uint32BufferAttribute extends BufferAttribute{constructor(array,itemSize,normalized){super(new Uint32Array(array),itemSize,normalized);}}class Float16BufferAttribute extends BufferAttribute{constructor(array,itemSize,normalized){super(new Uint16Array(array),itemSize,normalized);}}Float16BufferAttribute.prototype.isFloat16BufferAttribute=true;class Float32BufferAttribute extends BufferAttribute{constructor(array,itemSize,normalized){super(new Float32Array(array),itemSize,normalized);}}let _id=0;const _m1=/*@__PURE__*/new Matrix4();const _obj=/*@__PURE__*/new Object3D();const _offset=/*@__PURE__*/new Vector3();const _box$1=/*@__PURE__*/new Box3();const _boxMorphTargets=/*@__PURE__*/new Box3();const _vector$8=/*@__PURE__*/new Vector3();class BufferGeometry extends EventDispatcher{constructor(){super();Object.defineProperty(this,'id',{value:_id++});this.uuid=generateUUID();this.name='';this.type='BufferGeometry';this.index=null;this.attributes={};this.morphAttributes={};this.morphTargetsRelative=false;this.groups=[];this.boundingBox=null;this.boundingSphere=null;this.drawRange={start:0,count:Infinity};this.userData={};}getIndex(){return this.index;}setIndex(index){if(Array.isArray(index)){this.index=new(arrayMax(index)>65535?Uint32BufferAttribute:Uint16BufferAttribute)(index,1);}else {this.index=index;}return this;}getAttribute(name){return this.attributes[name];}setAttribute(name,attribute){this.attributes[name]=attribute;return this;}deleteAttribute(name){delete this.attributes[name];return this;}hasAttribute(name){return this.attributes[name]!==undefined;}addGroup(start,count,materialIndex=0){this.groups.push({start:start,count:count,materialIndex:materialIndex});}clearGroups(){this.groups=[];}setDrawRange(start,count){this.drawRange.start=start;this.drawRange.count=count;}applyMatrix4(matrix){const position=this.attributes.position;if(position!==undefined){position.applyMatrix4(matrix);position.needsUpdate=true;}const normal=this.attributes.normal;if(normal!==undefined){const normalMatrix=new Matrix3().getNormalMatrix(matrix);normal.applyNormalMatrix(normalMatrix);normal.needsUpdate=true;}const tangent=this.attributes.tangent;if(tangent!==undefined){tangent.transformDirection(matrix);tangent.needsUpdate=true;}if(this.boundingBox!==null){this.computeBoundingBox();}if(this.boundingSphere!==null){this.computeBoundingSphere();}return this;}applyQuaternion(q){_m1.makeRotationFromQuaternion(q);this.applyMatrix4(_m1);return this;}rotateX(angle){// rotate geometry around world x-axis
 _m1.makeRotationX(angle);this.applyMatrix4(_m1);return this;}rotateY(angle){// rotate geometry around world y-axis
 _m1.makeRotationY(angle);this.applyMatrix4(_m1);return this;}rotateZ(angle){// rotate geometry around world z-axis
@@ -10172,7 +10198,7 @@ const boundingBox=source.boundingBox;if(boundingBox!==null){this.boundingBox=bou
 const boundingSphere=source.boundingSphere;if(boundingSphere!==null){this.boundingSphere=boundingSphere.clone();}// draw range
 this.drawRange.start=source.drawRange.start;this.drawRange.count=source.drawRange.count;// user data
 this.userData=source.userData;// geometry generator parameters
-if(source.parameters!==undefined)this.parameters=Object.assign({},source.parameters);return this;}dispose(){this.dispatchEvent({type:'dispose'});}}BufferGeometry.prototype.isBufferGeometry=true;const _inverseMatrix$2=/*@__PURE__*/new Matrix4();const _ray$2=/*@__PURE__*/new Ray();const _sphere$3=/*@__PURE__*/new Sphere();const _vA$1=/*@__PURE__*/new Vector3();const _vB$1=/*@__PURE__*/new Vector3();const _vC$1=/*@__PURE__*/new Vector3();const _tempA=/*@__PURE__*/new Vector3();const _tempB=/*@__PURE__*/new Vector3();const _tempC=/*@__PURE__*/new Vector3();const _morphA=/*@__PURE__*/new Vector3();const _morphB=/*@__PURE__*/new Vector3();const _morphC=/*@__PURE__*/new Vector3();const _uvA$1=/*@__PURE__*/new Vector2();const _uvB$1=/*@__PURE__*/new Vector2();const _uvC$1=/*@__PURE__*/new Vector2();const _intersectionPoint=/*@__PURE__*/new Vector3();const _intersectionPointWorld=/*@__PURE__*/new Vector3();class Mesh extends Object3D{constructor(geometry=new BufferGeometry(),material=new MeshBasicMaterial$1()){super();this.type='Mesh';this.geometry=geometry;this.material=material;this.updateMorphTargets();}copy(source){super.copy(source);if(source.morphTargetInfluences!==undefined){this.morphTargetInfluences=source.morphTargetInfluences.slice();}if(source.morphTargetDictionary!==undefined){this.morphTargetDictionary=Object.assign({},source.morphTargetDictionary);}this.material=source.material;this.geometry=source.geometry;return this;}updateMorphTargets(){const geometry=this.geometry;if(geometry.isBufferGeometry){const morphAttributes=geometry.morphAttributes;const keys=Object.keys(morphAttributes);if(keys.length>0){const morphAttribute=morphAttributes[keys[0]];if(morphAttribute!==undefined){this.morphTargetInfluences=[];this.morphTargetDictionary={};for(let m=0,ml=morphAttribute.length;m<ml;m++){const name=morphAttribute[m].name||String(m);this.morphTargetInfluences.push(0);this.morphTargetDictionary[name]=m;}}}}else {const morphTargets=geometry.morphTargets;if(morphTargets!==undefined&&morphTargets.length>0){console.error('THREE.Mesh.updateMorphTargets() no longer supports THREE.Geometry. Use THREE.BufferGeometry instead.');}}}raycast(raycaster,intersects){const geometry=this.geometry;const material=this.material;const matrixWorld=this.matrixWorld;if(material===undefined)return;// Checking boundingSphere distance to ray
+if(source.parameters!==undefined)this.parameters=Object.assign({},source.parameters);return this;}dispose(){this.dispatchEvent({type:'dispose'});}}BufferGeometry.prototype.isBufferGeometry=true;const _inverseMatrix$2=/*@__PURE__*/new Matrix4();const _ray$2=/*@__PURE__*/new Ray();const _sphere$3=/*@__PURE__*/new Sphere();const _vA$1=/*@__PURE__*/new Vector3();const _vB$1=/*@__PURE__*/new Vector3();const _vC$1=/*@__PURE__*/new Vector3();const _tempA=/*@__PURE__*/new Vector3();const _tempB=/*@__PURE__*/new Vector3();const _tempC=/*@__PURE__*/new Vector3();const _morphA=/*@__PURE__*/new Vector3();const _morphB=/*@__PURE__*/new Vector3();const _morphC=/*@__PURE__*/new Vector3();const _uvA$1=/*@__PURE__*/new Vector2();const _uvB$1=/*@__PURE__*/new Vector2();const _uvC$1=/*@__PURE__*/new Vector2();const _intersectionPoint=/*@__PURE__*/new Vector3();const _intersectionPointWorld=/*@__PURE__*/new Vector3();class Mesh extends Object3D{constructor(geometry=new BufferGeometry(),material=new MeshBasicMaterial()){super();this.type='Mesh';this.geometry=geometry;this.material=material;this.updateMorphTargets();}copy(source){super.copy(source);if(source.morphTargetInfluences!==undefined){this.morphTargetInfluences=source.morphTargetInfluences.slice();}if(source.morphTargetDictionary!==undefined){this.morphTargetDictionary=Object.assign({},source.morphTargetDictionary);}this.material=source.material;this.geometry=source.geometry;return this;}updateMorphTargets(){const geometry=this.geometry;if(geometry.isBufferGeometry){const morphAttributes=geometry.morphAttributes;const keys=Object.keys(morphAttributes);if(keys.length>0){const morphAttribute=morphAttributes[keys[0]];if(morphAttribute!==undefined){this.morphTargetInfluences=[];this.morphTargetDictionary={};for(let m=0,ml=morphAttribute.length;m<ml;m++){const name=morphAttribute[m].name||String(m);this.morphTargetInfluences.push(0);this.morphTargetDictionary[name]=m;}}}}else {const morphTargets=geometry.morphTargets;if(morphTargets!==undefined&&morphTargets.length>0){console.error('THREE.Mesh.updateMorphTargets() no longer supports THREE.Geometry. Use THREE.BufferGeometry instead.');}}}raycast(raycaster,intersects){const geometry=this.geometry;const material=this.material;const matrixWorld=this.matrixWorld;if(material===undefined)return;// Checking boundingSphere distance to ray
 if(geometry.boundingSphere===null)geometry.computeBoundingSphere();_sphere$3.copy(geometry.boundingSphere);_sphere$3.applyMatrix4(matrixWorld);if(raycaster.ray.intersectsSphere(_sphere$3)===false)return;//
 _inverseMatrix$2.copy(matrixWorld).invert();_ray$2.copy(raycaster.ray).applyMatrix4(_inverseMatrix$2);// Check boundingBox before continuing
 if(geometry.boundingBox!==null){if(_ray$2.intersectsBox(geometry.boundingBox)===false)return;}let intersection;if(geometry.isBufferGeometry){const index=geometry.index;const position=geometry.attributes.position;const morphPosition=geometry.morphAttributes.position;const morphTargetsRelative=geometry.morphTargetsRelative;const uv=geometry.attributes.uv;const uv2=geometry.attributes.uv2;const groups=geometry.groups;const drawRange=geometry.drawRange;if(index!==null){// indexed buffer geometry
@@ -10407,7 +10433,7 @@ const _axisDirections=[/*@__PURE__*/new Vector3(1,1,1),/*@__PURE__*/new Vector3(
 	 * one of them will cause any others to also become unusable.
 	 */dispose(){this._blurMaterial.dispose();if(this._cubemapShader!==null)this._cubemapShader.dispose();if(this._equirectShader!==null)this._equirectShader.dispose();for(let i=0;i<_lodPlanes.length;i++){_lodPlanes[i].dispose();}}// private interface
 _cleanup(outputTarget){this._pingPongRenderTarget.dispose();this._renderer.setRenderTarget(_oldTarget);outputTarget.scissorTest=false;_setViewport(outputTarget,0,0,outputTarget.width,outputTarget.height);}_fromTexture(texture){_oldTarget=this._renderer.getRenderTarget();const cubeUVRenderTarget=this._allocateTargets(texture);this._textureToCubeUV(texture,cubeUVRenderTarget);this._applyPMREM(cubeUVRenderTarget);this._cleanup(cubeUVRenderTarget);return cubeUVRenderTarget;}_allocateTargets(texture){// warning: null texture is valid
-const params={magFilter:NearestFilter,minFilter:NearestFilter,generateMipmaps:false,type:UnsignedByteType,format:RGBEFormat,encoding:_isLDR(texture)?texture.encoding:RGBEEncoding,depthBuffer:false};const cubeUVRenderTarget=_createRenderTarget(params);cubeUVRenderTarget.depthBuffer=texture?false:true;this._pingPongRenderTarget=_createRenderTarget(params);return cubeUVRenderTarget;}_compileMaterial(material){const tmpMesh=new Mesh(_lodPlanes[0],material);this._renderer.compile(tmpMesh,_flatCamera);}_sceneToCubeUV(scene,near,far,cubeUVRenderTarget){const fov=90;const aspect=1;const cubeCamera=new PerspectiveCamera(fov,aspect,near,far);const upSign=[1,-1,1,1,1,1];const forwardSign=[1,1,1,-1,-1,-1];const renderer=this._renderer;const originalAutoClear=renderer.autoClear;const outputEncoding=renderer.outputEncoding;const toneMapping=renderer.toneMapping;renderer.getClearColor(_clearColor);renderer.toneMapping=NoToneMapping;renderer.outputEncoding=LinearEncoding;renderer.autoClear=false;const backgroundMaterial=new MeshBasicMaterial$1({name:'PMREM.Background',side:BackSide,depthWrite:false,depthTest:false});const backgroundBox=new Mesh(new BoxGeometry(),backgroundMaterial);let useSolidColor=false;const background=scene.background;if(background){if(background.isColor){backgroundMaterial.color.copy(background);scene.background=null;useSolidColor=true;}}else {backgroundMaterial.color.copy(_clearColor);useSolidColor=true;}for(let i=0;i<6;i++){const col=i%3;if(col==0){cubeCamera.up.set(0,upSign[i],0);cubeCamera.lookAt(forwardSign[i],0,0);}else if(col==1){cubeCamera.up.set(0,0,upSign[i]);cubeCamera.lookAt(0,forwardSign[i],0);}else {cubeCamera.up.set(0,upSign[i],0);cubeCamera.lookAt(0,0,forwardSign[i]);}_setViewport(cubeUVRenderTarget,col*SIZE_MAX,i>2?SIZE_MAX:0,SIZE_MAX,SIZE_MAX);renderer.setRenderTarget(cubeUVRenderTarget);if(useSolidColor){renderer.render(backgroundBox,cubeCamera);}renderer.render(scene,cubeCamera);}backgroundBox.geometry.dispose();backgroundBox.material.dispose();renderer.toneMapping=toneMapping;renderer.outputEncoding=outputEncoding;renderer.autoClear=originalAutoClear;scene.background=background;}_setEncoding(uniform,texture){/* if ( this._renderer.capabilities.isWebGL2 === true && texture.format === RGBAFormat && texture.type === UnsignedByteType && texture.encoding === sRGBEncoding ) {
+const params={magFilter:NearestFilter,minFilter:NearestFilter,generateMipmaps:false,type:UnsignedByteType,format:RGBEFormat,encoding:_isLDR(texture)?texture.encoding:RGBEEncoding,depthBuffer:false};const cubeUVRenderTarget=_createRenderTarget(params);cubeUVRenderTarget.depthBuffer=texture?false:true;this._pingPongRenderTarget=_createRenderTarget(params);return cubeUVRenderTarget;}_compileMaterial(material){const tmpMesh=new Mesh(_lodPlanes[0],material);this._renderer.compile(tmpMesh,_flatCamera);}_sceneToCubeUV(scene,near,far,cubeUVRenderTarget){const fov=90;const aspect=1;const cubeCamera=new PerspectiveCamera(fov,aspect,near,far);const upSign=[1,-1,1,1,1,1];const forwardSign=[1,1,1,-1,-1,-1];const renderer=this._renderer;const originalAutoClear=renderer.autoClear;const outputEncoding=renderer.outputEncoding;const toneMapping=renderer.toneMapping;renderer.getClearColor(_clearColor);renderer.toneMapping=NoToneMapping;renderer.outputEncoding=LinearEncoding;renderer.autoClear=false;const backgroundMaterial=new MeshBasicMaterial({name:'PMREM.Background',side:BackSide,depthWrite:false,depthTest:false});const backgroundBox=new Mesh(new BoxGeometry(),backgroundMaterial);let useSolidColor=false;const background=scene.background;if(background){if(background.isColor){backgroundMaterial.color.copy(background);scene.background=null;useSolidColor=true;}}else {backgroundMaterial.color.copy(_clearColor);useSolidColor=true;}for(let i=0;i<6;i++){const col=i%3;if(col==0){cubeCamera.up.set(0,upSign[i],0);cubeCamera.lookAt(forwardSign[i],0,0);}else if(col==1){cubeCamera.up.set(0,0,upSign[i]);cubeCamera.lookAt(0,forwardSign[i],0);}else {cubeCamera.up.set(0,upSign[i],0);cubeCamera.lookAt(0,0,forwardSign[i]);}_setViewport(cubeUVRenderTarget,col*SIZE_MAX,i>2?SIZE_MAX:0,SIZE_MAX,SIZE_MAX);renderer.setRenderTarget(cubeUVRenderTarget);if(useSolidColor){renderer.render(backgroundBox,cubeCamera);}renderer.render(scene,cubeCamera);}backgroundBox.geometry.dispose();backgroundBox.material.dispose();renderer.toneMapping=toneMapping;renderer.outputEncoding=outputEncoding;renderer.autoClear=originalAutoClear;scene.background=background;}_setEncoding(uniform,texture){/* if ( this._renderer.capabilities.isWebGL2 === true && texture.format === RGBAFormat && texture.type === UnsignedByteType && texture.encoding === sRGBEncoding ) {
 
 			uniform.value = ENCODINGS[ LinearEncoding ];
 
@@ -12993,7 +13019,7 @@ class TransformControlsGizmo extends Object3D {
     super();
     this.type = 'TransformControlsGizmo'; // shared materials
 
-    const gizmoMaterial = new MeshBasicMaterial$1({
+    const gizmoMaterial = new MeshBasicMaterial({
       depthTest: false,
       depthWrite: false,
       fog: false,
@@ -13422,7 +13448,7 @@ TransformControlsGizmo.prototype.isTransformControlsGizmo = true; //
 
 class TransformControlsPlane extends Mesh {
   constructor() {
-    super(new PlaneGeometry(100000, 100000, 2, 2), new MeshBasicMaterial$1({
+    super(new PlaneGeometry(100000, 100000, 2, 2), new MeshBasicMaterial({
       visible: false,
       wireframe: true,
       side: DoubleSide,
@@ -13608,10 +13634,10 @@ class IfcPlane$1 extends IfcComponent {
   }
 
 }
-IfcPlane$1.hiddenMaterial = new MeshBasicMaterial$1({
+IfcPlane$1.hiddenMaterial = new MeshBasicMaterial({
   visible: false
 });
-IfcPlane$1.planeMaterial = new MeshBasicMaterial$1({
+IfcPlane$1.planeMaterial = new MeshBasicMaterial({
   color: 0xffff00,
   side: DoubleSide,
   transparent: true,
@@ -19844,7 +19870,7 @@ class IfcSelection extends IfcComponent {
 class VisibilityManager {
   constructor(loader, context) {
     this.modelMaterials = {};
-    this.invisibleMaterial = new MeshBasicMaterial$1({
+    this.invisibleMaterial = new MeshBasicMaterial({
       visible: false
     });
     this.ifc = loader;
@@ -27763,7 +27789,7 @@ class IfcDimensions extends IfcComponent {
       linewidth: 2,
       depthTest: false
     });
-    this.endpointsMaterial = new MeshBasicMaterial$1({
+    this.endpointsMaterial = new MeshBasicMaterial({
       color: 0x000000,
       depthTest: false
     }); // Temp variables
@@ -28337,7 +28363,7 @@ class GLTFMaterialsUnlitExtension {
   }
 
   getMaterialType() {
-    return MeshBasicMaterial$1;
+    return MeshBasicMaterial;
   }
 
   extendParams(materialParams, materialDef, parser) {
@@ -30209,7 +30235,7 @@ class GLTFParser {
       }
     }
 
-    if (materialDef.normalTexture !== undefined && materialType !== MeshBasicMaterial$1) {
+    if (materialDef.normalTexture !== undefined && materialType !== MeshBasicMaterial) {
       pending.push(parser.assignTexture(materialParams, 'normalMap', materialDef.normalTexture));
       materialParams.normalScale = new Vector2(1, 1);
 
@@ -30219,7 +30245,7 @@ class GLTFParser {
       }
     }
 
-    if (materialDef.occlusionTexture !== undefined && materialType !== MeshBasicMaterial$1) {
+    if (materialDef.occlusionTexture !== undefined && materialType !== MeshBasicMaterial) {
       pending.push(parser.assignTexture(materialParams, 'aoMap', materialDef.occlusionTexture));
 
       if (materialDef.occlusionTexture.strength !== undefined) {
@@ -30227,11 +30253,11 @@ class GLTFParser {
       }
     }
 
-    if (materialDef.emissiveFactor !== undefined && materialType !== MeshBasicMaterial$1) {
+    if (materialDef.emissiveFactor !== undefined && materialType !== MeshBasicMaterial) {
       materialParams.emissive = new Color().fromArray(materialDef.emissiveFactor);
     }
 
-    if (materialDef.emissiveTexture !== undefined && materialType !== MeshBasicMaterial$1) {
+    if (materialDef.emissiveTexture !== undefined && materialType !== MeshBasicMaterial) {
       pending.push(parser.assignTexture(materialParams, 'emissiveMap', materialDef.emissiveTexture));
     }
 
@@ -31221,13 +31247,18 @@ function createCanvas() {
   // test
   console.log("Hello, CanvasViewer.js is working"); // DOM
 
-  const container = document.getElementById("canvas");
+  const container = document.getElementById("canvasViewer");
   const GUI = {
-    input: document.getElementById("file-input") // loader: document.getElementById("loader-button"),
-    // props: document.getElementById("property-menu"),
-    // tree: document.getElementById("tree-menu"),
+    input: document.getElementById("file-input"),
+    loader: document.getElementById("loader-button"),
+    props: document.getElementById("property-menu"),
+    tree: document.getElementById("tree-menu")
+  }; // sustitute hidden input with button
 
-  }; // set viewer
+  GUI.loader.onclick = () => GUI.input.click(); // declare ifcTree
+
+
+  let ifcTree; // set viewer
 
   const viewer = new IfcViewerAPI({
     container: container,
@@ -31236,8 +31267,7 @@ function createCanvas() {
 
   viewer.IFC.setWasmPath("../../files/");
   viewer.addAxes();
-  viewer.addGrid(); // GUI.loader.onclick = () => GUI.input.click(); // check this to sustitute the input button
-  // loading models
+  viewer.addGrid(); // loading models
   // input
 
   GUI.input.onchange = async event => {
@@ -31250,23 +31280,149 @@ function createCanvas() {
 
 
   async function loadExampleModel() {
-    await viewer.IFC.loadIfcUrl("models/test.ifc"); // createTreeMenu(model.modelID);
+    const model = await viewer.IFC.loadIfcUrl("models/test.ifc");
+    createTreeMenu(model.modelID);
   }
 
   loadExampleModel(); // THREE
   // materials
-
-  new MeshBasicMaterial({
-    color: 0xff0000,
-    depthTest: false,
-    opacity: 0.2,
-    transparent: true
-  }); // IFC TOOLS
+  // const preselectMaterial = new MeshBasicMaterial({
+  //   color: 0xff0000,
+  //   depthTest: false,
+  //   opacity: 0.2,
+  //   transparent: true,
+  // });
+  // IFC TOOLS
   // actions handlers
+  // preselection
 
-  container.onmousemove = () => {
-    viewer.IFC.prePickIfcItem();
+  container.onmousemove = () => viewer.IFC.prePickIfcItem(); //others
+
+
+  container.ondblclick = async () => {
+    const curObject = await viewer.IFC.pickIfcItem(true);
+    if (curObject === null || curObject === undefined) return;
+    const curObjectProps = await viewer.IFC.getProperties(curObject.modelID, curObject.id, true, true);
+    console.log(curObjectProps);
+    updatePropertyMenu(curObjectProps);
   };
+
+  function updatePropertyMenu(objectPropsToUpdate) {
+    removeAllChildren(GUI.props);
+    objectPropsToUpdate.mats;
+    objectPropsToUpdate.psets;
+    objectPropsToUpdate.type; // delete objectPropsToUpdate.mats;
+    // delete objectPropsToUpdate.psets;
+    // delete objectPropsToUpdate.type;
+
+    for (let curPropName in objectPropsToUpdate) {
+      const curPropValue = objectPropsToUpdate[curPropName];
+      createPropertyEntry(curPropName, curPropValue);
+    }
+  }
+
+  function createPropertyEntry(curPropName, curPropValue) {
+    // container
+    const root = document.createElement("div");
+    root.classList.add("property-root");
+    if (curPropValue === null || curPropValue === undefined) curPropValue = "null/undefined value";else if (curPropValue.value) curPropValue = curPropValue.value; // name
+
+    const curKeyDiv = document.createElement("div");
+    curKeyDiv.classList.add("property-name");
+    curKeyDiv.textContent = curPropName;
+    root.appendChild(curKeyDiv);
+    const curValueDiv = document.createElement("div");
+    curValueDiv.classList.add("property-value");
+    curValueDiv.textContent = curPropValue;
+    root.appendChild(curValueDiv);
+    GUI.props.appendChild(root);
+  }
+
+  function removeAllChildren(element) {
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
+    }
+  } // Tree menu
+
+
+  var toggler = document.getElementsByClassName("caret");
+
+  for (let i = 0; i < toggler.length; i++) {
+    const current = toggler[i];
+
+    current.onclick = () => {
+      current.parentElement.querySelector(".nested").classList.toggle("active");
+      current.classList.toggle("caret-down");
+    };
+  }
+
+  async function createTreeMenu(modelID) {
+    ifcProject = await viewer.IFC.getSpatialStructure(modelID);
+    removeAllChildren(GUI.tree);
+    const ifcProjectNode = createNestedChild(GUI.tree, ifcProject);
+    ifcProject.children.forEach(child => {
+      constructTreeMenuNode(ifcProjectNode, child);
+    });
+  }
+
+  function constructTreeMenuNode(parent, node) {
+    const children = node.children;
+
+    if (children.length === 0) {
+      createSimpleChild(parent, node);
+      return;
+    }
+
+    const nodeElement = createNestedChild(parent, node);
+    children.forEach(child => {
+      constructTreeMenuNode(nodeElement, child);
+    });
+  }
+
+  function createNestedChild(parent, node) {
+    const content = nodeToString(node);
+    const root = document.createElement("li");
+    createNestedNodeTitle(root, content);
+    const childrenContainer = document.createElement("ul");
+    childrenContainer.classList.add("nested");
+    root.appendChild(childrenContainer);
+    parent.appendChild(root);
+    return childrenContainer;
+  }
+
+  function createNestedNodeTitle(parent, content) {
+    const title = document.createElement("span");
+    title.classList.add("caret");
+
+    title.onclick = () => {
+      title.parentElement.querySelector(".nested").classList.toggle("active");
+      title.classList.toggle("caret-down");
+    };
+
+    title.textContent = content;
+    parent.appendChild(title);
+  }
+
+  function createSimpleChild(parent, node) {
+    const childNode = document.createElement("li");
+    childNode.classList.add("leaf-node");
+    childNode.textContent = nodeToString(node);
+    parent.appendChild(childNode);
+
+    childNode.onmouseenter = () => {
+      viewer.IFC.prepickIfcItemsByID(0, [node.expressID]);
+    };
+
+    childNode.onclick = async () => {
+      viewer.IFC.pickIfcItemsByID(0, [node.expressID], true);
+      const props = await viewer.IFC.getProperties(0, node.expressID, true);
+      updatePropertyMenu(props);
+    };
+  }
+
+  function nodeToString(node) {
+    return `${node.type} - ${node.expressID}`;
+  }
 }
 
 console.log("Hello, index.js is working");

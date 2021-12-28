@@ -1,13 +1,17 @@
 import React, { useState } from "react";
+import Header from "./Header";
 import Canvas from "./Canvas";
-
-import Header from "./Navbar";
+import Sidebar from "./Sidebar";
 
 function App() {
   return (
     <div>
+      <input type="file" id="file-input"></input>
       <Header />
-      <Canvas />
+      <div class="app-container">
+        <Sidebar />
+        <Canvas />
+      </div>
     </div>
   );
 }
