@@ -30422,35 +30422,267 @@ function IfcViewer() {
   });
 }
 
+class EventEmitter {
+  constructor() {
+    this.callbacks = {};
+    this.callbacks.base = {};
+  }
+
+  on(_names, callback) {
+    // Errors
+    if (typeof _names === 'undefined' || _names === '') {
+      console.warn('wrong names');
+      return false;
+    }
+
+    if (typeof callback === 'undefined') {
+      console.warn('wrong callback');
+      return false;
+    } // Resolve names
+
+
+    const names = this.resolveNames(_names); // Each name
+
+    names.forEach(_name => {
+      // Resolve name
+      const name = this.resolveName(_name); // Create namespace if not exist
+
+      if (!(this.callbacks[name.namespace] instanceof Object)) this.callbacks[name.namespace] = {}; // Create callback if not exist
+
+      if (!(this.callbacks[name.namespace][name.value] instanceof Array)) this.callbacks[name.namespace][name.value] = []; // Add callback
+
+      this.callbacks[name.namespace][name.value].push(callback);
+    });
+    return this;
+  }
+
+  off(_names) {
+    // Errors
+    if (typeof _names === 'undefined' || _names === '') {
+      console.warn('wrong name');
+      return false;
+    } // Resolve names
+
+
+    const names = this.resolveNames(_names); // Each name
+
+    names.forEach(_name => {
+      // Resolve name
+      const name = this.resolveName(_name); // Remove namespace
+
+      if (name.namespace !== 'base' && name.value === '') {
+        delete this.callbacks[name.namespace];
+      } // Remove specific callback in namespace
+      else {
+        // Default
+        if (name.namespace === 'base') {
+          // Try to remove from each namespace
+          for (const namespace in this.callbacks) {
+            if (this.callbacks[namespace] instanceof Object && this.callbacks[namespace][name.value] instanceof Array) {
+              delete this.callbacks[namespace][name.value]; // Remove namespace if empty
+
+              if (Object.keys(this.callbacks[namespace]).length === 0) delete this.callbacks[namespace];
+            }
+          }
+        } // Specified namespace
+        else if (this.callbacks[name.namespace] instanceof Object && this.callbacks[name.namespace][name.value] instanceof Array) {
+          delete this.callbacks[name.namespace][name.value]; // Remove namespace if empty
+
+          if (Object.keys(this.callbacks[name.namespace]).length === 0) delete this.callbacks[name.namespace];
+        }
+      }
+    });
+    return this;
+  }
+
+  trigger(_name, _args) {
+    // Errors
+    if (typeof _name === 'undefined' || _name === '') {
+      console.warn('wrong name');
+      return false;
+    }
+
+    let finalResult = null;
+
+    const args = !(_args instanceof Array) ? [] : _args; // Resolve names (should on have one event)
+
+    let name = this.resolveNames(_name); // Resolve name
+
+    name = this.resolveName(name[0]); // Default namespace
+
+    if (name.namespace === 'base') {
+      // Try to find callback in each namespace
+      for (const namespace in this.callbacks) {
+        if (this.callbacks[namespace] instanceof Object && this.callbacks[namespace][name.value] instanceof Array) {
+          this.callbacks[namespace][name.value].forEach(function (callback) {
+            callback.apply(this, args);
+          });
+        }
+      }
+    } // Specified namespace
+    else if (this.callbacks[name.namespace] instanceof Object) {
+      if (name.value === '') {
+        console.warn('wrong name');
+        return this;
+      }
+
+      this.callbacks[name.namespace][name.value].forEach(function (callback) {
+        callback.apply(this, args);
+      });
+    }
+
+    return finalResult;
+  }
+
+  resolveNames(_names) {
+    let names = _names;
+    names = names.replace(/[^a-zA-Z0-9 ,/.]/g, '');
+    names = names.replace(/[,/]+/g, ' ');
+    names = names.split(' ');
+    return names;
+  }
+
+  resolveName(name) {
+    const newName = {};
+    const parts = name.split('.');
+    newName.original = name;
+    newName.value = parts[0];
+    newName.namespace = 'base'; // Base namespace
+    // Specified namespace
+
+    if (parts.length > 1 && parts[1] !== '') {
+      newName.namespace = parts[1];
+    }
+
+    return newName;
+  }
+
+}
+
+class Sizes extends EventEmitter {
+  constructor() {
+    // Setup
+    super();
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
+    this.pixelRatio = Math.min(window.devicePixelRatio, 2); //Resize event
+
+    window.addEventListener("resize", () => {
+      this.width = window.innerWidth;
+      this.height = window.innerHeight;
+      this.pixelRatio = Math.min(window.devicePixelRatio, 2);
+      this.trigger("resize");
+    });
+  }
+
+}
+
+class Time extends EventEmitter {
+  constructor() {
+    // Setup
+    super(); // Setup
+
+    this.start = Date.now();
+    this.current = this.start;
+    this.elapsed = 0;
+    this.delta = 16;
+    window.requestAnimationFrame(() => {
+      this.tick();
+    });
+  }
+
+  tick() {
+    const currentTime = Date.now();
+    this.delta = currentTime - this.current;
+    this.current = currentTime;
+    this.elapsed = this.current - this.start;
+    this.trigger("tick");
+    window.requestAnimationFrame(() => {
+      this.tick();
+    });
+  }
+
+}
+
+class ModelViewer {
+  constructor() {
+    // Global access
+    window.modelViewer = this; // Options
+    // this.canvas = canvas
+    // Setup
+
+    this.sizes = new Sizes();
+    this.time = new Time(); // Sizes resize event
+
+    this.sizes.on("resize", () => {
+      this.resize();
+    }); // Time tick event
+
+    this.time.on("tick", () => {
+      this.update();
+    }); // console.log(this.time);
+    // IfcViewer creation
+
+    const viewerRef = react.exports.useRef();
+    react.exports.useEffect(() => {
+      const container = document.getElementById("local-ifc-container");
+      const viewerAPI = new IfcViewerAPI({
+        container
+      });
+      viewerAPI.addAxes();
+      viewerAPI.addGrid();
+      viewerAPI.IFC.setWasmPath("../../files/");
+      viewerRef.current = viewerAPI;
+    }, []);
+    console.log("ModelViewer created!");
+  }
+
+  resize() {}
+
+  update() {}
+
+  render() {
+    return /*#__PURE__*/React.createElement("div", {
+      id: "local-ifc-container",
+      style: {
+        position: "relative",
+        height: "80vh",
+        width: "80vw"
+      }
+    }, "Esto deberia ser un canvas");
+  }
+
+}
+
+function Test() {
+  const modelViewer = new ModelViewer(); // return <h1>hola</h1>
+
+  return modelViewer.render();
+}
+
 function App() {
   return /*#__PURE__*/React.createElement(BrowserRouter, null, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("nav", null, /*#__PURE__*/React.createElement("ul", null, /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement(Link, {
     to: "/"
   }, "Home")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement(Link, {
-    to: "/about"
-  }, "About")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement(Link, {
+    to: "/test"
+  }, "Test")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement(Link, {
     to: "/viewer"
   }, "Viewer")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("input", {
     type: "file",
     id: "file-input"
   }))), /*#__PURE__*/React.createElement("ul", null, /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("p", null, "Add example")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("p", null, "Add model")))), /*#__PURE__*/React.createElement(Routes, null, /*#__PURE__*/React.createElement(Route, {
-    path: "/about",
-    element: /*#__PURE__*/React.createElement(About, null)
+    path: "/test",
+    element: /*#__PURE__*/React.createElement(Test, null)
   }), /*#__PURE__*/React.createElement(Route, {
     path: "/viewer",
     element: /*#__PURE__*/React.createElement(IfcViewer, null)
   }), /*#__PURE__*/React.createElement(Route, {
     path: "/",
-    element: /*#__PURE__*/React.createElement(Home, null)
+    element: /*#__PURE__*/React.createElement(Test, null)
   }))));
-}
-
-function Home() {
-  return /*#__PURE__*/React.createElement("h2", null, "Home");
-}
-
-function About() {
-  return /*#__PURE__*/React.createElement("h2", null, "About");
-}
+} // function Home() {
+//   return <h2>Home</h2>;
+// }
 
 console.log("Hello, index.js is working");
 ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById('root'));
