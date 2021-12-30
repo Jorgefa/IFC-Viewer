@@ -30399,29 +30399,6 @@ class IfcViewerAPI {
 
 }
 
-function IfcViewer() {
-  const viewerRef = react.exports.useRef();
-  react.exports.useEffect(() => {
-    container = document.getElementById("local-ifc-container");
-    const viewerAPI = new IfcViewerAPI({
-      container
-    });
-    viewerAPI.addAxes();
-    viewerAPI.addGrid();
-    viewerAPI.IFC.setWasmPath("../../files/");
-    viewerRef.current = viewerAPI;
-    console.log("Viewer created");
-  }, []);
-  return /*#__PURE__*/React.createElement("div", {
-    id: "local-ifc-container",
-    style: {
-      position: "relative",
-      height: "80vh",
-      width: "80vw"
-    }
-  });
-}
-
 class EventEmitter {
   constructor() {
     this.callbacks = {};
@@ -30607,9 +30584,7 @@ class Time extends EventEmitter {
 class ModelViewer {
   constructor() {
     // Global access
-    window.modelViewer = this; // Options
-    // this.canvas = canvas
-    // Setup
+    window.modelViewer = this; // Setup
 
     this.sizes = new Sizes();
     this.time = new Time(); // Sizes resize event
@@ -30620,20 +30595,33 @@ class ModelViewer {
 
     this.time.on("tick", () => {
       this.update();
-    }); // console.log(this.time);
-    // IfcViewer creation
+    }); //Viewer creation
 
     const viewerRef = react.exports.useRef();
+    const canvasRef = react.exports.useRef();
     react.exports.useEffect(() => {
-      const container = document.getElementById("local-ifc-container");
+      const canvas = document.getElementById("local-ifc-container");
       const viewerAPI = new IfcViewerAPI({
-        container
+        container: canvas
       });
       viewerAPI.addAxes();
       viewerAPI.addGrid();
       viewerAPI.IFC.setWasmPath("../../files/");
       viewerRef.current = viewerAPI;
-    }, []);
+      canvasRef.current = canvas;
+      this.canvas = canvasRef;
+      this.viewer = viewerRef;
+    }, []); // IfcViewer creation - OLD
+    // const viewerRef = useRef();
+    // useEffect(() => {
+    //   const container = document.getElementById("local-ifc-container");
+    //   const viewerAPI = new IfcViewerAPI({ container });
+    //   viewerAPI.addAxes();
+    //   viewerAPI.addGrid();
+    //   viewerAPI.IFC.setWasmPath("../../files/");
+    //   viewerRef.current = viewerAPI;
+    // }, []);
+
     console.log("ModelViewer created!");
   }
 
@@ -30643,7 +30631,7 @@ class ModelViewer {
 
   render() {
     return /*#__PURE__*/React.createElement("div", {
-      id: "local-ifc-container",
+      // id="local-ifc-container"
       style: {
         position: "relative",
         height: "80vh",
@@ -30654,10 +30642,21 @@ class ModelViewer {
 
 }
 
-function Test() {
-  const modelViewer = new ModelViewer(); // return <h1>hola</h1>
+function ModelViewerCanvas() {
+  new ModelViewer();
+  return /*#__PURE__*/React.createElement("div", {
+    id: "local-ifc-container",
+    style: {
+      position: "relative",
+      height: "80vh",
+      width: "80vw"
+    }
+  });
+}
 
-  return modelViewer.render();
+function IfcLoadExample() {
+  const curViewer = window.modelViewer.viewer;
+  curViewer.current.IFC.loadIfcUrl("models/IfcExample.ifc", true);
 }
 
 function App() {
@@ -30670,20 +30669,24 @@ function App() {
   }, "Viewer")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("input", {
     type: "file",
     id: "file-input"
-  }))), /*#__PURE__*/React.createElement("ul", null, /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("p", null, "Add example")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("p", null, "Add model")))), /*#__PURE__*/React.createElement(Routes, null, /*#__PURE__*/React.createElement(Route, {
+  }))), /*#__PURE__*/React.createElement("ul", null, /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("p", {
+    onClick: IfcLoadExample
+  }, "Add example")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("p", null, "Add model")))), /*#__PURE__*/React.createElement(Routes, null, /*#__PURE__*/React.createElement(Route, {
     path: "/test",
-    element: /*#__PURE__*/React.createElement(Test, null)
+    element: /*#__PURE__*/React.createElement(IfcLoadExample, null)
   }), /*#__PURE__*/React.createElement(Route, {
     path: "/viewer",
-    element: /*#__PURE__*/React.createElement(IfcViewer, null)
+    element: /*#__PURE__*/React.createElement(Viewer, null)
   }), /*#__PURE__*/React.createElement(Route, {
     path: "/",
-    element: /*#__PURE__*/React.createElement(Test, null)
+    element: /*#__PURE__*/React.createElement(ModelViewerCanvas, null)
   }))));
-} // function Home() {
-//   return <h2>Home</h2>;
-// }
+}
+
+function Viewer() {
+  return /*#__PURE__*/React.createElement("h2", null, "Viewer");
+}
 
 console.log("Hello, index.js is working");
-ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById('root'));
+ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById('root')); // const modelViewer = new ModelViewer()
 //# sourceMappingURL=bundle.js.map

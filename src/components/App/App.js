@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import IfcViewer from "../IfcViewer/IfcViewer.js";
-import Test from "../ModelViewer/Testing"
+import ModelViewerCanvas from "../ModelViewer/ModelViewerCanvas"
+import IfcLoadExample from "../IfcLoaders/IfcLoadExample.js";
 
 export default function App() {
   return (
@@ -25,7 +25,7 @@ export default function App() {
           </ul>
           <ul>
             <li>
-              <p>Add example</p>
+              <p onClick={IfcLoadExample} >Add example</p>
             </li>
             <li>
               <p>Add model</p>
@@ -36,15 +36,19 @@ export default function App() {
         {/* A <Routes> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Routes>
-          <Route path="/test" element={<Test />} />
-          <Route path="/viewer" element={<IfcViewer />} />
-          <Route path="/" element={<Test />} />
+          <Route path="/test" element={<IfcLoadExample />} />
+          <Route path="/viewer" element={<Viewer />} />
+          <Route path="/" element={<ModelViewerCanvas />} /> 
         </Routes>
       </div>
     </Router>
   );
 }
 
-// function Home() {
-//   return <h2>Home</h2>;
-// }
+function Test() {
+  return <h2>Test</h2>;
+}
+
+function Viewer() {
+  return <h2>Viewer</h2>;
+}
