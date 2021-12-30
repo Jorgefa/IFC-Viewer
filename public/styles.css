@@ -43,7 +43,13 @@ body {
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
 }
-
+.webgl
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    outline: none;
+}
 
 .tree-menu-container {
   height: 50%;
