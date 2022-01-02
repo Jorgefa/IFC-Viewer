@@ -30399,6 +30399,17 @@ class IfcViewerAPI {
 
 }
 
+function IfcLoadExample(props) {
+  const addExample = () => {
+    const curIfcViewerAPI = props.ifcViewerAPI;
+    curIfcViewerAPI.current.IFC.loadIfcUrl("models/IfcExample.ifc", true);
+  };
+
+  return /*#__PURE__*/React.createElement("div", {
+    onClick: addExample
+  }, "Add example");
+}
+
 class EventEmitter {
   constructor() {
     this.callbacks = {};
@@ -30581,71 +30592,52 @@ class Time extends EventEmitter {
 
 }
 
-let instance = null;
-class ModelViewer extends react.exports.Component {
-  constructor() {
-    super(); // In order to be able to access modelViewer props in other places, check if there is already a modelViewer created, if yes, keep ot. If not, create another one.
+function ModelViewer() {
+  //   const ifcModels = useSelector((state) => state.ifcModels.value);
+  const ifcViewerAPIRef = react.exports.useRef();
+  react.exports.useRef();
+  const canvasRef = react.exports.useRef(); //Creates the Three.js scene
 
-    if (instance) {
-      return instance;
-    }
+  react.exports.useEffect(() => {
+    canvasRef.current = document.querySelector("div.webgl");
+    ifcViewerAPIRef.current = new IfcViewerAPI({
+      container: canvasRef.current
+    });
+    ifcViewerAPIRef.current.addAxes();
+    ifcViewerAPIRef.current.addGrid();
+    ifcViewerAPIRef.current.IFC.setWasmPath("../../files/"); // setIfcViewApi(ifcViewerApiRef.current);
 
-    instance = this; // Global access. Maybe not necesary.
+    console.log(canvasRef);
+    console.log(ifcViewerAPIRef);
+  }); // Setup subcomponents
 
-    window.modelViewer = this; // Setup subcomponents
+  const sizes = new Sizes();
+  const time = new Time(); // Sizes resize event
 
-    this.sizes = new Sizes();
-    this.time = new Time(); // Sizes resize event
+  sizes.on("resize", () => {
+    resize();
+  }); // Time tick event
 
-    this.sizes.on("resize", () => {
-      this.resize();
-    }); // Time tick event
+  time.on("tick", () => {
+    update();
+  });
 
-    this.time.on("tick", () => {
-      this.update();
-    }); // After render
-    // Viewer creation
-    // Create ref components
+  const resize = () => {
+    console.log(sizes); // Resize renderer
 
-    const ifcViewerAPIRef = react.exports.useRef();
-    const canvasRef = react.exports.useRef(); // Create viewer after render
+    ifcViewerAPIRef.current.context.ifcRenderer.renderer.setSize(sizes.width, sizes.height);
+    ifcViewerAPIRef.current.context.ifcRenderer.renderer.setPixelRatio(Math.min(sizes.pixelRatio, 2)); // Resize camera
 
-    react.exports.useEffect(() => {
-      const canvas = document.querySelector("div.webgl");
-      const viewerAPI = new IfcViewerAPI({
-        container: canvas
-      });
-      viewerAPI.addAxes();
-      viewerAPI.addGrid();
-      viewerAPI.IFC.setWasmPath("../../files/");
-      ifcViewerAPIRef.current = viewerAPI;
-      canvasRef.current = canvas;
-    }, []); // Setup subcomponents after renderer
+    ifcViewerAPIRef.current.context.ifcCamera.activeCamera.aspect = sizes.width / sizes.height;
+    ifcViewerAPIRef.current.context.ifcCamera.activeCamera.updateProjectionMatrix();
+  };
 
-    react.exports.useEffect(() => {
-      this.canvas = canvasRef.current;
-      this.ifcViewerAPI = ifcViewerAPIRef.current;
-      this.camera = this.ifcViewerAPI.context.ifcCamera.activeCamera;
-      this.renderer = this.ifcViewerAPI.context.ifcRenderer.renderer;
-    }, []);
-  }
+  const update = () => {// console.log("Updated");
+  };
 
-  resize() {
-    // Resize renderer
-    this.renderer.setSize(this.sizes.width, this.sizes.height);
-    this.renderer.setPixelRatio(Math.min(this.sizes.pixelRatio, 2)); // Resize camera
-
-    this.camera.aspect = this.sizes.width / this.sizes.height;
-    this.camera.updateProjectionMatrix();
-  }
-
-  update() {}
-
-}
-
-function ModelViewerCanvas() {
-  new ModelViewer();
-  return /*#__PURE__*/React.createElement("div", {
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(IfcLoadExample, {
+    ifcViewerAPI: ifcViewerAPIRef
+  }), /*#__PURE__*/React.createElement("div", {
     id: "wegbgl-div",
     className: "webgl",
     style: {
@@ -30653,13 +30645,7 @@ function ModelViewerCanvas() {
       height: "80vh",
       width: "80vw"
     }
-  });
-}
-
-function IfcLoadExample() {
-  const modelViewer = new ModelViewer();
-  const curIfcViewerAPI = modelViewer.ifcViewerAPI;
-  curIfcViewerAPI.IFC.loadIfcUrl("models/IfcExample.ifc", true);
+  }));
 }
 
 var classnames = {exports: {}};
@@ -32773,10 +32759,10 @@ function App() {
     element: /*#__PURE__*/React.createElement(Test, null)
   }), /*#__PURE__*/React.createElement(Route, {
     path: "/viewer",
-    element: /*#__PURE__*/React.createElement(ModelViewerCanvas, null)
+    element: /*#__PURE__*/React.createElement(ModelViewer, null)
   }), /*#__PURE__*/React.createElement(Route, {
     path: "/",
-    element: /*#__PURE__*/React.createElement(Test, null)
+    element: /*#__PURE__*/React.createElement(ModelViewer, null)
   })))));
 }
 
