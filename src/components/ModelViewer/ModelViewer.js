@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { Component, useEffect, useRef } from "react";
 import { IfcViewerAPI } from "web-ifc-viewer";
 import Camera from "./Camera";
 import Sizes from "./Utils/Sizes";
@@ -6,15 +6,18 @@ import Time from "./Utils/Time";
 
 let instance = null;
 
-export default class ModelViewer {
+export default class ModelViewer extends Component {
   constructor() {
+
+    super() 
+
+      // In order to be able to access modelViewer props in other places, check if there is already a modelViewer created, if yes, keep ot. If not, create another one.
     if (instance) {
       return instance;
     }
-
     instance = this;
 
-    // Global access
+    // Global access. Maybe not necesary.
     window.modelViewer = this;
 
     // Setup subcomponents
@@ -55,18 +58,17 @@ export default class ModelViewer {
       this.renderer = this.ifcViewerAPI.context.ifcRenderer.renderer;
     }, []);
   }
+
   resize() {
-    console.log(this.camera);
     // Resize renderer
-    this.renderer.setSize(this.sizes.width, this.sizes.height)
-    this.renderer.setPixelRatio(Math.min(this.sizes.pixelRatio, 2))
+    this.renderer.setSize(this.sizes.width, this.sizes.height);
+    this.renderer.setPixelRatio(Math.min(this.sizes.pixelRatio, 2));
 
     // Resize camera
-    this.camera.aspect = this.sizes.width / this.sizes.height
-    this.camera.updateProjectionMatrix()
+    this.camera.aspect = this.sizes.width / this.sizes.height;
+    this.camera.updateProjectionMatrix();
   }
+
   update() {}
-  render() {
-    return <h1>Hello from model viewer!</h1>;
-  }
+
 }
