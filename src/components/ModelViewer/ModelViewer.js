@@ -3,8 +3,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { IfcViewerAPI } from "web-ifc-viewer";
 import Camera from "./Camera";
 import IfcLoadExample from "./IfcLoaders/IfcLoadExample";
+import ModelViewerTools from "../Navigator/ModelViewerTools";
 import Sizes from "./Utils/Sizes";
 import Time from "./Utils/Time";
+import { Color } from "three";
 
 export default function ModelViewer() {
   //   const ifcModels = useSelector((state) => state.ifcModels.value);
@@ -18,6 +20,7 @@ export default function ModelViewer() {
     canvasRef.current = document.querySelector("div.webgl");
     ifcViewerAPIRef.current = new IfcViewerAPI({
       container: canvasRef.current,
+      backgroundColor: new Color(255, 255, 255),
     });
 
     ifcViewerAPIRef.current.addAxes();
@@ -25,20 +28,24 @@ export default function ModelViewer() {
     ifcViewerAPIRef.current.IFC.setWasmPath("../../files/");
 
     // Onmouse preselector
-    canvasRef.current.onmousemove = () => ifcViewerAPIRef.current.IFC.prePickIfcItem();
+    canvasRef.current.onmousemove = () =>
+      ifcViewerAPIRef.current.IFC.prePickIfcItem();
 
     // DblClick selector
     canvasRef.current.ondblclick = async () => {
       const curObject = await ifcViewerAPIRef.current.IFC.pickIfcItem(true);
-      if(curObject === null || curObject === undefined) return;
-      const curObjectProps = await ifcViewerAPIRef.current.IFC.getProperties(curObject.modelID, curObject.id, true, true);
+      if (curObject === null || curObject === undefined) return;
+      const curObjectProps = await ifcViewerAPIRef.current.IFC.getProperties(
+        curObject.modelID,
+        curObject.id,
+        true,
+        true
+      );
       console.log(curObjectProps);
-  }
-    console.log(canvasRef);
-    console.log(ifcViewerAPIRef);
+    };
+    // console.log(canvasRef);
+    // console.log(ifcViewerAPIRef);
   });
-
-
 
   // Setup subcomponents
   const sizes = new Sizes();
@@ -55,8 +62,7 @@ export default function ModelViewer() {
   });
 
   const resize = () => {
-
-    console.log(sizes);
+    // console.log(sizes);
     // Resize renderer
     ifcViewerAPIRef.current.context.ifcRenderer.renderer.setSize(
       sizes.width,
@@ -76,18 +82,17 @@ export default function ModelViewer() {
     // console.log("Updated");
   };
 
-
-
   return (
     <div>
-      <IfcLoadExample ifcViewerAPI={ifcViewerAPIRef} />
+      <ModelViewerTools ifcViewerAPI={ifcViewerAPIRef} />
+      {/* <IfcLoadExample ifcViewerAPI= {ifcViewerAPIRef} /> */}
       <div
         id="wegbgl-div"
         className="webgl"
         style={{
           position: "relative",
           height: "80vh",
-          width: "80vw",
+          width: "100vw",
         }}
       />
     </div>

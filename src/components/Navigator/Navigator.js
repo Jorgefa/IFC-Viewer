@@ -21,17 +21,6 @@ export default function Navigator() {
             <Link to="/viewer">Viewer</Link>
           </Nav.Item>
         </div>
-        <div>
-          <Nav.Item>
-            <input type="file" id="file-input" />
-          </Nav.Item>
-          <Nav.Item>
-            <p onClick={IfcLoadExample}>Add example</p>
-          </Nav.Item>
-          <Nav.Item>
-            <p>Add model</p>
-          </Nav.Item>
-        </div>
       </nav>
     </Nav>
   );

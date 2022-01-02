@@ -30405,257 +30405,9 @@ function IfcLoadExample(props) {
     curIfcViewerAPI.current.IFC.loadIfcUrl("models/IfcExample.ifc", true);
   };
 
-  return /*#__PURE__*/React.createElement("div", {
+  return /*#__PURE__*/React.createElement("p", {
     onClick: addExample
   }, "Add example");
-}
-
-class EventEmitter {
-  constructor() {
-    this.callbacks = {};
-    this.callbacks.base = {};
-  }
-
-  on(_names, callback) {
-    // Errors
-    if (typeof _names === 'undefined' || _names === '') {
-      console.warn('wrong names');
-      return false;
-    }
-
-    if (typeof callback === 'undefined') {
-      console.warn('wrong callback');
-      return false;
-    } // Resolve names
-
-
-    const names = this.resolveNames(_names); // Each name
-
-    names.forEach(_name => {
-      // Resolve name
-      const name = this.resolveName(_name); // Create namespace if not exist
-
-      if (!(this.callbacks[name.namespace] instanceof Object)) this.callbacks[name.namespace] = {}; // Create callback if not exist
-
-      if (!(this.callbacks[name.namespace][name.value] instanceof Array)) this.callbacks[name.namespace][name.value] = []; // Add callback
-
-      this.callbacks[name.namespace][name.value].push(callback);
-    });
-    return this;
-  }
-
-  off(_names) {
-    // Errors
-    if (typeof _names === 'undefined' || _names === '') {
-      console.warn('wrong name');
-      return false;
-    } // Resolve names
-
-
-    const names = this.resolveNames(_names); // Each name
-
-    names.forEach(_name => {
-      // Resolve name
-      const name = this.resolveName(_name); // Remove namespace
-
-      if (name.namespace !== 'base' && name.value === '') {
-        delete this.callbacks[name.namespace];
-      } // Remove specific callback in namespace
-      else {
-        // Default
-        if (name.namespace === 'base') {
-          // Try to remove from each namespace
-          for (const namespace in this.callbacks) {
-            if (this.callbacks[namespace] instanceof Object && this.callbacks[namespace][name.value] instanceof Array) {
-              delete this.callbacks[namespace][name.value]; // Remove namespace if empty
-
-              if (Object.keys(this.callbacks[namespace]).length === 0) delete this.callbacks[namespace];
-            }
-          }
-        } // Specified namespace
-        else if (this.callbacks[name.namespace] instanceof Object && this.callbacks[name.namespace][name.value] instanceof Array) {
-          delete this.callbacks[name.namespace][name.value]; // Remove namespace if empty
-
-          if (Object.keys(this.callbacks[name.namespace]).length === 0) delete this.callbacks[name.namespace];
-        }
-      }
-    });
-    return this;
-  }
-
-  trigger(_name, _args) {
-    // Errors
-    if (typeof _name === 'undefined' || _name === '') {
-      console.warn('wrong name');
-      return false;
-    }
-
-    let finalResult = null;
-
-    const args = !(_args instanceof Array) ? [] : _args; // Resolve names (should on have one event)
-
-    let name = this.resolveNames(_name); // Resolve name
-
-    name = this.resolveName(name[0]); // Default namespace
-
-    if (name.namespace === 'base') {
-      // Try to find callback in each namespace
-      for (const namespace in this.callbacks) {
-        if (this.callbacks[namespace] instanceof Object && this.callbacks[namespace][name.value] instanceof Array) {
-          this.callbacks[namespace][name.value].forEach(function (callback) {
-            callback.apply(this, args);
-          });
-        }
-      }
-    } // Specified namespace
-    else if (this.callbacks[name.namespace] instanceof Object) {
-      if (name.value === '') {
-        console.warn('wrong name');
-        return this;
-      }
-
-      this.callbacks[name.namespace][name.value].forEach(function (callback) {
-        callback.apply(this, args);
-      });
-    }
-
-    return finalResult;
-  }
-
-  resolveNames(_names) {
-    let names = _names;
-    names = names.replace(/[^a-zA-Z0-9 ,/.]/g, '');
-    names = names.replace(/[,/]+/g, ' ');
-    names = names.split(' ');
-    return names;
-  }
-
-  resolveName(name) {
-    const newName = {};
-    const parts = name.split('.');
-    newName.original = name;
-    newName.value = parts[0];
-    newName.namespace = 'base'; // Base namespace
-    // Specified namespace
-
-    if (parts.length > 1 && parts[1] !== '') {
-      newName.namespace = parts[1];
-    }
-
-    return newName;
-  }
-
-}
-
-class Sizes extends EventEmitter {
-  constructor() {
-    // Setup
-    super();
-    this.width = window.innerWidth;
-    this.height = window.innerHeight;
-    this.pixelRatio = Math.min(window.devicePixelRatio, 2); //Resize event
-
-    window.addEventListener("resize", () => {
-      this.width = window.innerWidth;
-      this.height = window.innerHeight;
-      this.pixelRatio = Math.min(window.devicePixelRatio, 2);
-      this.trigger("resize");
-    });
-  }
-
-}
-
-class Time extends EventEmitter {
-  constructor() {
-    // Setup
-    super(); // Setup
-
-    this.start = Date.now();
-    this.current = this.start;
-    this.elapsed = 0;
-    this.delta = 16;
-    window.requestAnimationFrame(() => {
-      this.tick();
-    });
-  }
-
-  tick() {
-    const currentTime = Date.now();
-    this.delta = currentTime - this.current;
-    this.current = currentTime;
-    this.elapsed = this.current - this.start;
-    this.trigger("tick");
-    window.requestAnimationFrame(() => {
-      this.tick();
-    });
-  }
-
-}
-
-function ModelViewer() {
-  //   const ifcModels = useSelector((state) => state.ifcModels.value);
-  const ifcViewerAPIRef = react.exports.useRef();
-  react.exports.useRef();
-  const canvasRef = react.exports.useRef(); //Creates the Three.js scene
-
-  react.exports.useEffect(() => {
-    canvasRef.current = document.querySelector("div.webgl");
-    ifcViewerAPIRef.current = new IfcViewerAPI({
-      container: canvasRef.current
-    });
-    ifcViewerAPIRef.current.addAxes();
-    ifcViewerAPIRef.current.addGrid();
-    ifcViewerAPIRef.current.IFC.setWasmPath("../../files/"); // Onmouse preselector
-
-    canvasRef.current.onmousemove = () => ifcViewerAPIRef.current.IFC.prePickIfcItem(); // DblClick selector
-
-
-    canvasRef.current.ondblclick = async () => {
-      const curObject = await ifcViewerAPIRef.current.IFC.pickIfcItem(true);
-      if (curObject === null || curObject === undefined) return;
-      const curObjectProps = await ifcViewerAPIRef.current.IFC.getProperties(curObject.modelID, curObject.id, true, true);
-      console.log(curObjectProps);
-    };
-
-    console.log(canvasRef);
-    console.log(ifcViewerAPIRef);
-  }); // Setup subcomponents
-
-  const sizes = new Sizes();
-  const time = new Time(); // Sizes resize event
-
-  sizes.on("resize", () => {
-    resize();
-  }); // Time tick event
-
-  time.on("tick", () => {
-    update();
-  });
-
-  const resize = () => {
-    console.log(sizes); // Resize renderer
-
-    ifcViewerAPIRef.current.context.ifcRenderer.renderer.setSize(sizes.width, sizes.height);
-    ifcViewerAPIRef.current.context.ifcRenderer.renderer.setPixelRatio(Math.min(sizes.pixelRatio, 2)); // Resize camera
-
-    ifcViewerAPIRef.current.context.ifcCamera.activeCamera.aspect = sizes.width / sizes.height;
-    ifcViewerAPIRef.current.context.ifcCamera.activeCamera.updateProjectionMatrix();
-  };
-
-  const update = () => {// console.log("Updated");
-  };
-
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(IfcLoadExample, {
-    ifcViewerAPI: ifcViewerAPIRef
-  }), /*#__PURE__*/React.createElement("div", {
-    id: "wegbgl-div",
-    className: "webgl",
-    style: {
-      position: "relative",
-      height: "80vh",
-      width: "80vw"
-    }
-  }));
 }
 
 var classnames = {exports: {}};
@@ -32745,6 +32497,288 @@ var Nav$1 = Object.assign(Nav, {
   Link: NavLink$1
 });
 
+function AddSection(props) {
+  const curIfcViewerAPI = props.ifcViewerAPI;
+
+  const addSection = () => {
+    {
+      window.ondblclick = async () => {
+        console.log(curIfcViewerAPI.current);
+        curIfcViewerAPI.current.clipper.createPlane();
+      };
+    }
+  };
+
+  const removeAllSections = () => {
+    console.log(curIfcViewerAPI);
+  };
+
+  return /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement("p", {
+    onClick: addSection
+  }, "Add section"), /*#__PURE__*/React.createElement("p", {
+    onClick: removeAllSections
+  }, "Remove all sections"));
+}
+
+function ModelViewerTools(props) {
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement("input", {
+    type: "file",
+    id: "file-input"
+  })), /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement(IfcLoadExample, {
+    ifcViewerAPI: props.ifcViewerAPI
+  })), /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement(AddSection, {
+    ifcViewerAPI: props.ifcViewerAPI
+  })), /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement("p", null, "Show project tree")), /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement("p", null, "Show element properties")));
+}
+
+class EventEmitter {
+  constructor() {
+    this.callbacks = {};
+    this.callbacks.base = {};
+  }
+
+  on(_names, callback) {
+    // Errors
+    if (typeof _names === 'undefined' || _names === '') {
+      console.warn('wrong names');
+      return false;
+    }
+
+    if (typeof callback === 'undefined') {
+      console.warn('wrong callback');
+      return false;
+    } // Resolve names
+
+
+    const names = this.resolveNames(_names); // Each name
+
+    names.forEach(_name => {
+      // Resolve name
+      const name = this.resolveName(_name); // Create namespace if not exist
+
+      if (!(this.callbacks[name.namespace] instanceof Object)) this.callbacks[name.namespace] = {}; // Create callback if not exist
+
+      if (!(this.callbacks[name.namespace][name.value] instanceof Array)) this.callbacks[name.namespace][name.value] = []; // Add callback
+
+      this.callbacks[name.namespace][name.value].push(callback);
+    });
+    return this;
+  }
+
+  off(_names) {
+    // Errors
+    if (typeof _names === 'undefined' || _names === '') {
+      console.warn('wrong name');
+      return false;
+    } // Resolve names
+
+
+    const names = this.resolveNames(_names); // Each name
+
+    names.forEach(_name => {
+      // Resolve name
+      const name = this.resolveName(_name); // Remove namespace
+
+      if (name.namespace !== 'base' && name.value === '') {
+        delete this.callbacks[name.namespace];
+      } // Remove specific callback in namespace
+      else {
+        // Default
+        if (name.namespace === 'base') {
+          // Try to remove from each namespace
+          for (const namespace in this.callbacks) {
+            if (this.callbacks[namespace] instanceof Object && this.callbacks[namespace][name.value] instanceof Array) {
+              delete this.callbacks[namespace][name.value]; // Remove namespace if empty
+
+              if (Object.keys(this.callbacks[namespace]).length === 0) delete this.callbacks[namespace];
+            }
+          }
+        } // Specified namespace
+        else if (this.callbacks[name.namespace] instanceof Object && this.callbacks[name.namespace][name.value] instanceof Array) {
+          delete this.callbacks[name.namespace][name.value]; // Remove namespace if empty
+
+          if (Object.keys(this.callbacks[name.namespace]).length === 0) delete this.callbacks[name.namespace];
+        }
+      }
+    });
+    return this;
+  }
+
+  trigger(_name, _args) {
+    // Errors
+    if (typeof _name === 'undefined' || _name === '') {
+      console.warn('wrong name');
+      return false;
+    }
+
+    let finalResult = null;
+
+    const args = !(_args instanceof Array) ? [] : _args; // Resolve names (should on have one event)
+
+    let name = this.resolveNames(_name); // Resolve name
+
+    name = this.resolveName(name[0]); // Default namespace
+
+    if (name.namespace === 'base') {
+      // Try to find callback in each namespace
+      for (const namespace in this.callbacks) {
+        if (this.callbacks[namespace] instanceof Object && this.callbacks[namespace][name.value] instanceof Array) {
+          this.callbacks[namespace][name.value].forEach(function (callback) {
+            callback.apply(this, args);
+          });
+        }
+      }
+    } // Specified namespace
+    else if (this.callbacks[name.namespace] instanceof Object) {
+      if (name.value === '') {
+        console.warn('wrong name');
+        return this;
+      }
+
+      this.callbacks[name.namespace][name.value].forEach(function (callback) {
+        callback.apply(this, args);
+      });
+    }
+
+    return finalResult;
+  }
+
+  resolveNames(_names) {
+    let names = _names;
+    names = names.replace(/[^a-zA-Z0-9 ,/.]/g, '');
+    names = names.replace(/[,/]+/g, ' ');
+    names = names.split(' ');
+    return names;
+  }
+
+  resolveName(name) {
+    const newName = {};
+    const parts = name.split('.');
+    newName.original = name;
+    newName.value = parts[0];
+    newName.namespace = 'base'; // Base namespace
+    // Specified namespace
+
+    if (parts.length > 1 && parts[1] !== '') {
+      newName.namespace = parts[1];
+    }
+
+    return newName;
+  }
+
+}
+
+class Sizes extends EventEmitter {
+  constructor() {
+    // Setup
+    super();
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
+    this.pixelRatio = Math.min(window.devicePixelRatio, 2); //Resize event
+
+    window.addEventListener("resize", () => {
+      this.width = window.innerWidth;
+      this.height = window.innerHeight;
+      this.pixelRatio = Math.min(window.devicePixelRatio, 2);
+      this.trigger("resize");
+    });
+  }
+
+}
+
+class Time extends EventEmitter {
+  constructor() {
+    // Setup
+    super(); // Setup
+
+    this.start = Date.now();
+    this.current = this.start;
+    this.elapsed = 0;
+    this.delta = 16;
+    window.requestAnimationFrame(() => {
+      this.tick();
+    });
+  }
+
+  tick() {
+    const currentTime = Date.now();
+    this.delta = currentTime - this.current;
+    this.current = currentTime;
+    this.elapsed = this.current - this.start;
+    this.trigger("tick");
+    window.requestAnimationFrame(() => {
+      this.tick();
+    });
+  }
+
+}
+
+function ModelViewer() {
+  //   const ifcModels = useSelector((state) => state.ifcModels.value);
+  const ifcViewerAPIRef = react.exports.useRef();
+  react.exports.useRef();
+  const canvasRef = react.exports.useRef(); //Creates the Three.js scene
+
+  react.exports.useEffect(() => {
+    canvasRef.current = document.querySelector("div.webgl");
+    ifcViewerAPIRef.current = new IfcViewerAPI({
+      container: canvasRef.current,
+      backgroundColor: new Color(255, 255, 255)
+    });
+    ifcViewerAPIRef.current.addAxes();
+    ifcViewerAPIRef.current.addGrid();
+    ifcViewerAPIRef.current.IFC.setWasmPath("../../files/"); // Onmouse preselector
+
+    canvasRef.current.onmousemove = () => ifcViewerAPIRef.current.IFC.prePickIfcItem(); // DblClick selector
+
+
+    canvasRef.current.ondblclick = async () => {
+      const curObject = await ifcViewerAPIRef.current.IFC.pickIfcItem(true);
+      if (curObject === null || curObject === undefined) return;
+      const curObjectProps = await ifcViewerAPIRef.current.IFC.getProperties(curObject.modelID, curObject.id, true, true);
+      console.log(curObjectProps);
+    }; // console.log(canvasRef);
+    // console.log(ifcViewerAPIRef);
+
+  }); // Setup subcomponents
+
+  const sizes = new Sizes();
+  const time = new Time(); // Sizes resize event
+
+  sizes.on("resize", () => {
+    resize();
+  }); // Time tick event
+
+  time.on("tick", () => {
+    update();
+  });
+
+  const resize = () => {
+    // console.log(sizes);
+    // Resize renderer
+    ifcViewerAPIRef.current.context.ifcRenderer.renderer.setSize(sizes.width, sizes.height);
+    ifcViewerAPIRef.current.context.ifcRenderer.renderer.setPixelRatio(Math.min(sizes.pixelRatio, 2)); // Resize camera
+
+    ifcViewerAPIRef.current.context.ifcCamera.activeCamera.aspect = sizes.width / sizes.height;
+    ifcViewerAPIRef.current.context.ifcCamera.activeCamera.updateProjectionMatrix();
+  };
+
+  const update = () => {// console.log("Updated");
+  };
+
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(ModelViewerTools, {
+    ifcViewerAPI: ifcViewerAPIRef
+  }), /*#__PURE__*/React.createElement("div", {
+    id: "wegbgl-div",
+    className: "webgl",
+    style: {
+      position: "relative",
+      height: "80vh",
+      width: "100vw"
+    }
+  }));
+}
+
 function Navigator() {
   return /*#__PURE__*/React.createElement(Nav$1, {
     activeKey: "/home",
@@ -32755,12 +32789,7 @@ function Navigator() {
     to: "/test"
   }, "Test")), /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement(Link, {
     to: "/viewer"
-  }, "Viewer"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement("input", {
-    type: "file",
-    id: "file-input"
-  })), /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement("p", {
-    onClick: IfcLoadExample
-  }, "Add example")), /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement("p", null, "Add model")))));
+  }, "Viewer")))));
 }
 
 function App() {
@@ -32780,6 +32809,5 @@ function Test() {
   return /*#__PURE__*/React.createElement("h2", null, "Test");
 }
 
-console.log("Hello, index.js is working");
-ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById('root')); // const modelViewer = new ModelViewer()
+ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById('root'));
 //# sourceMappingURL=bundle.js.map
