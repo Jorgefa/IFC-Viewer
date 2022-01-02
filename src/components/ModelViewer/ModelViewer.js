@@ -24,11 +24,22 @@ export default function ModelViewer() {
     ifcViewerAPIRef.current.addGrid();
     ifcViewerAPIRef.current.IFC.setWasmPath("../../files/");
 
-    // setIfcViewApi(ifcViewerApiRef.current);
+    // Onmouse preselector
+    canvasRef.current.onmousemove = () => ifcViewerAPIRef.current.IFC.prePickIfcItem();
 
+    // DblClick selector
+    canvasRef.current.ondblclick = async () => {
+      const curObject = await ifcViewerAPIRef.current.IFC.pickIfcItem(true);
+      if(curObject === null || curObject === undefined) return;
+      const curObjectProps = await ifcViewerAPIRef.current.IFC.getProperties(curObject.modelID, curObject.id, true, true);
+      console.log(curObjectProps);
+  }
     console.log(canvasRef);
     console.log(ifcViewerAPIRef);
   });
+
+
+
   // Setup subcomponents
   const sizes = new Sizes();
   const time = new Time();
@@ -64,6 +75,8 @@ export default function ModelViewer() {
   const update = () => {
     // console.log("Updated");
   };
+
+
 
   return (
     <div>

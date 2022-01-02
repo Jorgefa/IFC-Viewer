@@ -30605,7 +30605,17 @@ function ModelViewer() {
     });
     ifcViewerAPIRef.current.addAxes();
     ifcViewerAPIRef.current.addGrid();
-    ifcViewerAPIRef.current.IFC.setWasmPath("../../files/"); // setIfcViewApi(ifcViewerApiRef.current);
+    ifcViewerAPIRef.current.IFC.setWasmPath("../../files/"); // Onmouse preselector
+
+    canvasRef.current.onmousemove = () => ifcViewerAPIRef.current.IFC.prePickIfcItem(); // DblClick selector
+
+
+    canvasRef.current.ondblclick = async () => {
+      const curObject = await ifcViewerAPIRef.current.IFC.pickIfcItem(true);
+      if (curObject === null || curObject === undefined) return;
+      const curObjectProps = await ifcViewerAPIRef.current.IFC.getProperties(curObject.modelID, curObject.id, true, true);
+      console.log(curObjectProps);
+    };
 
     console.log(canvasRef);
     console.log(ifcViewerAPIRef);
