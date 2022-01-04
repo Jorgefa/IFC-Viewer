@@ -6,26 +6,67 @@ import IfcLoadExample from "./IfcLoaders/IfcLoadExample";
 import ModelViewerTools from "../Navigator/ModelViewerTools";
 import Sizes from "./Utils/Sizes";
 import Time from "./Utils/Time";
-import { Color } from "three";
+import { Color, Fog, AxesHelper, MeshBasicMaterial } from "three";
+import { render } from "react-dom";
 
 export default function ModelViewer() {
-  //   const ifcModels = useSelector((state) => state.ifcModels.value);
+  // TO CHECK const ifcModels = useSelector((state) => state.ifcModels.value);
 
   const ifcViewerAPIRef = useRef();
   const cameraRef = useRef();
   const canvasRef = useRef();
 
+  // Materials
+  const materialColor = new Color(0xffffff);
+  const basicMaterial = new MeshBasicMaterial();
+  basicMaterial.color = materialColor;
+
   //Creates the Three.js scene
   useEffect(() => {
+    // Set canvas and create IfcViewerAPI
     canvasRef.current = document.querySelector("div.webgl");
     ifcViewerAPIRef.current = new IfcViewerAPI({
       container: canvasRef.current,
-      backgroundColor: new Color(255, 255, 255),
+      backgroundColor: new Color(0xeeeeee),
     });
 
-    ifcViewerAPIRef.current.addAxes();
-    ifcViewerAPIRef.current.addGrid();
+    // Set Wasm Path (WebAssembly file location)
     ifcViewerAPIRef.current.IFC.setWasmPath("../../files/");
+
+    // Set elements
+    const scene = ifcViewerAPIRef.current.context.ifcScene.scene;
+
+    // IFCjs IfcViewerAPI renderer
+    const renderer = ifcViewerAPIRef.current.context.ifcRenderer.renderer;
+    // renderer.setClearColor( 0xeeeeee, 0);
+    // renderer.setClearAlpha(1)
+    // console.log(renderer.getClearAlpha())
+
+    // IFCjs IfcViewerAPI grid. addGrid = size?: number, divisions?: number, colorCenterLine?: Color, colorGrid?: Color
+    ifcViewerAPIRef.current.addGrid(
+      1000,
+      1000,
+      new Color(0xffffff),
+      new Color(0xffffff)
+    );
+
+    // IFCjs IfcViewerAPI axes
+    ifcViewerAPIRef.current.addAxes();
+    0;
+    const axesHelpers = scene.children.find((x) => x.type === "AxesHelper");
+    axesHelpers.setColors(
+      new Color(0xffffff),
+      new Color(0xffffff),
+      new Color(0xffffff)
+    );
+
+    // THREEjs scene configuration
+    const fogNear = 5;
+    const fogFar = 50;
+    const fog = new Fog("#eeeeee", fogNear, fogFar);
+    scene.fog = fog;
+
+    // scene.overrideMaterial = basicMaterial;
 
     // Onmouse preselector
     canvasRef.current.onmousemove = () =>
@@ -43,8 +84,9 @@ export default function ModelViewer() {
       );
       console.log(curObjectProps);
     };
-    // console.log(canvasRef);
-    // console.log(ifcViewerAPIRef);
+
+    // Testing /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    console.log(scene);
   });
 
   // Setup subcomponents

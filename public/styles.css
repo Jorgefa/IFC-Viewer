@@ -8,7 +8,7 @@ html {
   font-family: "Montserrat", sans-serif;
 }
 body {
-  background: #eee;
+  background: #eeeeee;
   padding: 0 16px;
 }
 
@@ -22,7 +22,7 @@ body {
 .sidebar {
   min-width: 30rem;
   height: 100vh;
-  background-color: grey;
+  background-color: #eeeeee;
   border-right: var(--border);
 }
 

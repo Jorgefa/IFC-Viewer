@@ -10421,7 +10421,7 @@ if(glFormat===6407)glFormat=32849;if(glFormat===6408)glFormat=32856;}textures.se
 _gl.pixelStorei(37440,dstTexture.flipY);_gl.pixelStorei(37441,dstTexture.premultiplyAlpha);_gl.pixelStorei(3317,dstTexture.unpackAlignment);if(srcTexture.isDataTexture){_gl.texSubImage2D(3553,level,position.x,position.y,width,height,glFormat,glType,srcTexture.image.data);}else {if(srcTexture.isCompressedTexture){_gl.compressedTexSubImage2D(3553,level,position.x,position.y,srcTexture.mipmaps[0].width,srcTexture.mipmaps[0].height,glFormat,srcTexture.mipmaps[0].data);}else {_gl.texSubImage2D(3553,level,position.x,position.y,glFormat,glType,srcTexture.image);}}// Generate mipmaps only when copying level 0
 if(level===0&&dstTexture.generateMipmaps)_gl.generateMipmap(3553);state.unbindTexture();};this.copyTextureToTexture3D=function(sourceBox,position,srcTexture,dstTexture,level=0){if(_this.isWebGL1Renderer){console.warn('THREE.WebGLRenderer.copyTextureToTexture3D: can only be used with WebGL2.');return;}const width=sourceBox.max.x-sourceBox.min.x+1;const height=sourceBox.max.y-sourceBox.min.y+1;const depth=sourceBox.max.z-sourceBox.min.z+1;const glFormat=utils.convert(dstTexture.format);const glType=utils.convert(dstTexture.type);let glTarget;if(dstTexture.isDataTexture3D){textures.setTexture3D(dstTexture,0);glTarget=32879;}else if(dstTexture.isDataTexture2DArray){textures.setTexture2DArray(dstTexture,0);glTarget=35866;}else {console.warn('THREE.WebGLRenderer.copyTextureToTexture3D: only supports THREE.DataTexture3D and THREE.DataTexture2DArray.');return;}_gl.pixelStorei(37440,dstTexture.flipY);_gl.pixelStorei(37441,dstTexture.premultiplyAlpha);_gl.pixelStorei(3317,dstTexture.unpackAlignment);const unpackRowLen=_gl.getParameter(3314);const unpackImageHeight=_gl.getParameter(32878);const unpackSkipPixels=_gl.getParameter(3316);const unpackSkipRows=_gl.getParameter(3315);const unpackSkipImages=_gl.getParameter(32877);const image=srcTexture.isCompressedTexture?srcTexture.mipmaps[0]:srcTexture.image;_gl.pixelStorei(3314,image.width);_gl.pixelStorei(32878,image.height);_gl.pixelStorei(3316,sourceBox.min.x);_gl.pixelStorei(3315,sourceBox.min.y);_gl.pixelStorei(32877,sourceBox.min.z);if(srcTexture.isDataTexture||srcTexture.isDataTexture3D){_gl.texSubImage3D(glTarget,level,position.x,position.y,position.z,width,height,depth,glFormat,glType,image.data);}else {if(srcTexture.isCompressedTexture){console.warn('THREE.WebGLRenderer.copyTextureToTexture3D: untested support for compressed srcTexture.');_gl.compressedTexSubImage3D(glTarget,level,position.x,position.y,position.z,width,height,depth,glFormat,image.data);}else {_gl.texSubImage3D(glTarget,level,position.x,position.y,position.z,width,height,depth,glFormat,glType,image);}}_gl.pixelStorei(3314,unpackRowLen);_gl.pixelStorei(32878,unpackImageHeight);_gl.pixelStorei(3316,unpackSkipPixels);_gl.pixelStorei(3315,unpackSkipRows);_gl.pixelStorei(32877,unpackSkipImages);// Generate mipmaps only when copying level 0
 if(level===0&&dstTexture.generateMipmaps)_gl.generateMipmap(glTarget);state.unbindTexture();};this.initTexture=function(texture){textures.setTexture2D(texture,0);state.unbindTexture();};this.resetState=function(){_currentActiveCubeFace=0;_currentActiveMipmapLevel=0;_currentRenderTarget=null;state.reset();bindingStates.reset();};if(typeof __THREE_DEVTOOLS__!=='undefined'){__THREE_DEVTOOLS__.dispatchEvent(new CustomEvent('observe',{detail:this}));// eslint-disable-line no-undef
-}}WebGLRenderer.prototype.isWebGLRenderer=true;class WebGL1Renderer extends WebGLRenderer{}WebGL1Renderer.prototype.isWebGL1Renderer=true;class Scene extends Object3D{constructor(){super();this.type='Scene';this.background=null;this.environment=null;this.fog=null;this.overrideMaterial=null;this.autoUpdate=true;// checked by the renderer
+}}WebGLRenderer.prototype.isWebGLRenderer=true;class WebGL1Renderer extends WebGLRenderer{}WebGL1Renderer.prototype.isWebGL1Renderer=true;class Fog{constructor(color,near=1,far=1000){this.name='';this.color=new Color(color);this.near=near;this.far=far;}clone(){return new Fog(this.color,this.near,this.far);}toJSON(){return {type:'Fog',color:this.color.getHex(),near:this.near,far:this.far};}}Fog.prototype.isFog=true;class Scene extends Object3D{constructor(){super();this.type='Scene';this.background=null;this.environment=null;this.fog=null;this.overrideMaterial=null;this.autoUpdate=true;// checked by the renderer
 if(typeof __THREE_DEVTOOLS__!=='undefined'){__THREE_DEVTOOLS__.dispatchEvent(new CustomEvent('observe',{detail:this}));// eslint-disable-line no-undef
 }}copy(source,recursive){super.copy(source,recursive);if(source.background!==null)this.background=source.background.clone();if(source.environment!==null)this.environment=source.environment.clone();if(source.fog!==null)this.fog=source.fog.clone();if(source.overrideMaterial!==null)this.overrideMaterial=source.overrideMaterial.clone();this.autoUpdate=source.autoUpdate;this.matrixAutoUpdate=source.matrixAutoUpdate;return this;}toJSON(meta){const data=super.toJSON(meta);if(this.fog!==null)data.object.fog=this.fog.toJSON();return data;}}Scene.prototype.isScene=true;class InterleavedBuffer{constructor(array,stride){this.array=array;this.stride=stride;this.count=array!==undefined?array.length/stride:0;this.usage=StaticDrawUsage;this.updateRange={offset:0,count:-1};this.version=0;this.uuid=generateUUID();}onUploadCallback(){}set needsUpdate(value){if(value===true)this.version++;}setUsage(value){this.usage=value;return this;}copy(source){this.array=new source.array.constructor(source.array);this.count=source.count;this.stride=source.stride;this.usage=source.usage;return this;}copyAt(index1,attribute,index2){index1*=this.stride;index2*=attribute.stride;for(let i=0,l=this.stride;i<l;i++){this.array[index1+i]=attribute.array[index2+i];}return this;}set(value,offset=0){this.array.set(value,offset);return this;}clone(data){if(data.arrayBuffers===undefined){data.arrayBuffers={};}if(this.array.buffer._uuid===undefined){this.array.buffer._uuid=generateUUID();}if(data.arrayBuffers[this.array.buffer._uuid]===undefined){data.arrayBuffers[this.array.buffer._uuid]=this.array.slice(0).buffer;}const array=new this.array.constructor(data.arrayBuffers[this.array.buffer._uuid]);const ib=new this.constructor(array,this.stride);ib.setUsage(this.usage);return ib;}onUpload(callback){this.onUploadCallback=callback;return this;}toJSON(data){if(data.arrayBuffers===undefined){data.arrayBuffers={};}// generate UUID for array buffer if necessary
 if(this.array.buffer._uuid===undefined){this.array.buffer._uuid=generateUUID();}if(data.arrayBuffers[this.array.buffer._uuid]===undefined){data.arrayBuffers[this.array.buffer._uuid]=Array.prototype.slice.call(new Uint32Array(this.array.buffer));}//
@@ -32714,20 +32714,43 @@ class Time extends EventEmitter {
 }
 
 function ModelViewer() {
-  //   const ifcModels = useSelector((state) => state.ifcModels.value);
+  // TO CHECK const ifcModels = useSelector((state) => state.ifcModels.value);
   const ifcViewerAPIRef = react.exports.useRef();
   react.exports.useRef();
-  const canvasRef = react.exports.useRef(); //Creates the Three.js scene
+  const canvasRef = react.exports.useRef(); // Materials
+
+  const materialColor = new Color(0xffffff);
+  const basicMaterial = new MeshBasicMaterial();
+  basicMaterial.color = materialColor; //Creates the Three.js scene
 
   react.exports.useEffect(() => {
+    // Set canvas and create IfcViewerAPI
     canvasRef.current = document.querySelector("div.webgl");
     ifcViewerAPIRef.current = new IfcViewerAPI({
       container: canvasRef.current,
-      backgroundColor: new Color(255, 255, 255)
-    });
+      backgroundColor: new Color(0xeeeeee)
+    }); // Set Wasm Path (WebAssembly file location)
+
+    ifcViewerAPIRef.current.IFC.setWasmPath("../../files/"); // Set elements
+
+    const scene = ifcViewerAPIRef.current.context.ifcScene.scene; // IFCjs IfcViewerAPI renderer
+
+    ifcViewerAPIRef.current.context.ifcRenderer.renderer; // renderer.setClearColor( 0xeeeeee, 0);
+    // renderer.setClearAlpha(1)
+    // console.log(renderer.getClearAlpha())
+    // IFCjs IfcViewerAPI grid. addGrid = size?: number, divisions?: number, colorCenterLine?: Color, colorGrid?: Color
+
+    ifcViewerAPIRef.current.addGrid(1000, 1000, new Color(0xffffff), new Color(0xffffff)); // IFCjs IfcViewerAPI axes
+
     ifcViewerAPIRef.current.addAxes();
-    ifcViewerAPIRef.current.addGrid();
-    ifcViewerAPIRef.current.IFC.setWasmPath("../../files/"); // Onmouse preselector
+    const axesHelpers = scene.children.find(x => x.type === "AxesHelper");
+    axesHelpers.setColors(new Color(0xffffff), new Color(0xffffff), new Color(0xffffff)); // THREEjs scene configuration
+
+    const fogNear = 5;
+    const fogFar = 50;
+    const fog = new Fog("#eeeeee", fogNear, fogFar);
+    scene.fog = fog; // scene.overrideMaterial = basicMaterial;
+    // Onmouse preselector
 
     canvasRef.current.onmousemove = () => ifcViewerAPIRef.current.IFC.prePickIfcItem(); // DblClick selector
 
@@ -32737,9 +32760,10 @@ function ModelViewer() {
       if (curObject === null || curObject === undefined) return;
       const curObjectProps = await ifcViewerAPIRef.current.IFC.getProperties(curObject.modelID, curObject.id, true, true);
       console.log(curObjectProps);
-    }; // console.log(canvasRef);
-    // console.log(ifcViewerAPIRef);
+    }; // Testing /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+    console.log(scene);
   }); // Setup subcomponents
 
   const sizes = new Sizes();
