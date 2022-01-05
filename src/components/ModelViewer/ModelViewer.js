@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import { IfcViewerAPI } from "web-ifc-viewer";
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls'
+
 import Camera from "./Camera";
 import IfcLoadExample from "./IfcLoaders/IfcLoadExample";
 import ModelViewerTools from "../Navigator/ModelViewerTools";
@@ -13,7 +15,6 @@ export default function ModelViewer() {
   // TO CHECK const ifcModels = useSelector((state) => state.ifcModels.value);
 
   const ifcViewerAPIRef = useRef();
-  const cameraRef = useRef();
   const canvasRef = useRef();
 
   // Materials
@@ -65,8 +66,13 @@ export default function ModelViewer() {
     const fogFar = 50;
     const fog = new Fog("#eeeeee", fogNear, fogFar);
     scene.fog = fog;
-
+    // fog.name = "sceneFog"
     // scene.overrideMaterial = basicMaterial;
+
+    // THREEjs controls configuration. Check to change to FP
+    const camera = ifcViewerAPIRef.current.context.ifcCamera;
+    // camera.setNavigationMode(1);
+
 
     // Onmouse preselector
     canvasRef.current.onmousemove = () =>
@@ -86,7 +92,8 @@ export default function ModelViewer() {
     };
 
     // Testing /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    console.log(scene);
+    // console.log(ifcViewerAPIRef.current);
+    // console.log(camera);
   });
 
   // Setup subcomponents

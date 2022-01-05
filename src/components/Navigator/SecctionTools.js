@@ -5,6 +5,10 @@ export default function AddSection(props) {
   const curIfcViewerAPI = props.ifcViewerAPI;
   const addingSections = true;
 
+
+  // Add     useEffect(() => {}
+
+
   const addSection = () => {
     if (addingSections) {
       window.ondblclick = async () => {

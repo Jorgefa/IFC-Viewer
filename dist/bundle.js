@@ -32520,15 +32520,76 @@ function AddSection(props) {
   }, "Remove all sections"));
 }
 
-function ModelViewerTools(props) {
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement("input", {
+function IfcLoadLocalFile(props) {
+  const loadInputButton = react.exports.useRef();
+
+  const addLocalFile = () => {
+    const curIfcViewerAPI = props.ifcViewerAPI;
+    loadInputButton.current = document.getElementById("openFileDialog");
+    loadInputButton.current.click();
+
+    loadInputButton.current.onchange = async event => {
+      const file = event.target.files[0];
+      const url = URL.createObjectURL(file);
+      await curIfcViewerAPI.current.IFC.loadIfcUrl(url); // ifcTree = viewer.IFC.getSpatialStructure(model.modelID); //////////////////////////////////////// CHECK THIS
+      // console.log(ifcTree);
+    };
+  };
+
+  return /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement("input", {
+    readOnly: true,
     type: "file",
-    id: "file-input"
-  })), /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement(IfcLoadExample, {
+    id: "openFileDialog",
+    style: {
+      visibility: "collapse"
+    }
+  }), /*#__PURE__*/React.createElement("p", {
+    onClick: addLocalFile
+  }, "Add local file"));
+}
+
+function ModelViewerTools(props) {
+  // const fogNear = 5;
+  // const fogFar = 50;
+  // const fog = new Fog("#eeeeee", fogNear, fogFar);
+  // // scene.fog = fog;
+  // General
+  // toogleFog
+  let fogStatus;
+  let curFog;
+  const noFog = new Fog("#eeeeee", 10000, 10000);
+
+  const toggleFog = () => {
+    const curScene = props.ifcViewerAPI.current.context.ifcScene.scene;
+
+    switch (fogStatus) {
+      case 1:
+        curScene.fog = noFog;
+        fogStatus = 2;
+        break;
+
+      case 2:
+        curScene.fog = curFog;
+        fogStatus = 1;
+        break;
+
+      default:
+        curFog = curScene.fog;
+        curScene.fog = noFog;
+        fogStatus = 2;
+        break;
+    }
+  };
+
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(IfcLoadLocalFile, {
+    ifcViewerAPI: props.ifcViewerAPI
+  }), /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement(IfcLoadExample, {
     ifcViewerAPI: props.ifcViewerAPI
   })), /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement(AddSection, {
     ifcViewerAPI: props.ifcViewerAPI
-  })), /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement("p", null, "Show project tree")), /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement("p", null, "Show element properties")));
+  })), /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement("p", null, "Show project tree")), /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement("p", null, "Show element properties")), /*#__PURE__*/React.createElement(Nav$1.Item, null, /*#__PURE__*/React.createElement("p", {
+    onClick: toggleFog
+  }, "Toggle fog")));
 }
 
 class EventEmitter {
@@ -32716,7 +32777,6 @@ class Time extends EventEmitter {
 function ModelViewer() {
   // TO CHECK const ifcModels = useSelector((state) => state.ifcModels.value);
   const ifcViewerAPIRef = react.exports.useRef();
-  react.exports.useRef();
   const canvasRef = react.exports.useRef(); // Materials
 
   const materialColor = new Color(0xffffff);
@@ -32749,7 +32809,11 @@ function ModelViewer() {
     const fogNear = 5;
     const fogFar = 50;
     const fog = new Fog("#eeeeee", fogNear, fogFar);
-    scene.fog = fog; // scene.overrideMaterial = basicMaterial;
+    scene.fog = fog; // fog.name = "sceneFog"
+    // scene.overrideMaterial = basicMaterial;
+    // THREEjs controls configuration. Check to change to FP
+
+    ifcViewerAPIRef.current.context.ifcCamera; // camera.setNavigationMode(1);
     // Onmouse preselector
 
     canvasRef.current.onmousemove = () => ifcViewerAPIRef.current.IFC.prePickIfcItem(); // DblClick selector
@@ -32761,9 +32825,9 @@ function ModelViewer() {
       const curObjectProps = await ifcViewerAPIRef.current.IFC.getProperties(curObject.modelID, curObject.id, true, true);
       console.log(curObjectProps);
     }; // Testing /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // console.log(ifcViewerAPIRef.current);
+    // console.log(camera);
 
-
-    console.log(scene);
   }); // Setup subcomponents
 
   const sizes = new Sizes();
