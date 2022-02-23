@@ -56,9 +56,9 @@ export default function ModelViewer() {
     0;
     const axesHelpers = scene.children.find((x) => x.type === "AxesHelper");
     axesHelpers.setColors(
-      new Color(0xffffff),
-      new Color(0xffffff),
-      new Color(0xffffff)
+      new Color(0x000000),
+      new Color(0x000000),
+      new Color(0x000000)
     );
 
     // THREEjs scene configuration
@@ -88,6 +88,7 @@ export default function ModelViewer() {
         true,
         true
       );
+      console.log(curObject);
       console.log(curObjectProps);
     };
 

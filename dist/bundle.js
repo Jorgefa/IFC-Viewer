@@ -32804,7 +32804,7 @@ function ModelViewer() {
 
     ifcViewerAPIRef.current.addAxes();
     const axesHelpers = scene.children.find(x => x.type === "AxesHelper");
-    axesHelpers.setColors(new Color(0xffffff), new Color(0xffffff), new Color(0xffffff)); // THREEjs scene configuration
+    axesHelpers.setColors(new Color(0x000000), new Color(0x000000), new Color(0x000000)); // THREEjs scene configuration
 
     const fogNear = 5;
     const fogFar = 50;
@@ -32823,6 +32823,7 @@ function ModelViewer() {
       const curObject = await ifcViewerAPIRef.current.IFC.pickIfcItem(true);
       if (curObject === null || curObject === undefined) return;
       const curObjectProps = await ifcViewerAPIRef.current.IFC.getProperties(curObject.modelID, curObject.id, true, true);
+      console.log(curObject);
       console.log(curObjectProps);
     }; // Testing /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // console.log(ifcViewerAPIRef.current);
